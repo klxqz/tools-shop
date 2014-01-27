@@ -6,6 +6,8 @@
     <files>
         <file path="index.html" custom="0" parent="1">
         </file>
+        <file path="footer.html" custom="0" parent="1">
+        </file>
         <file path="tools.css" custom="0" parent="1">
         </file>
 
