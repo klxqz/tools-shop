@@ -1,0 +1,21 @@
+<!-- plugin hook: 'frontend_header' -->
+{* @event frontend_header.%plugin_id% *}
+{foreach $frontend_header as $_}{$_}{/foreach}            
+
+
+<!-- navigation breadcrumbs -->
+{if isset($breadcrumbs)}
+<div class="breadcrumb">
+    <a href="{$wa_app_url}">{$wa->accountName()}</a>
+    {if $breadcrumbs}
+    {foreach $breadcrumbs as $breadcrumb}
+    » <a href="{$breadcrumb.url}">{$breadcrumb.name|escape}</a>
+    {/foreach}
+    {else} » {/if}
+</div>
+{/if}
+
+
+<!-- current page core content -->
+{$content}
+

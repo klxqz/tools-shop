@@ -1,0 +1,112 @@
+<h1 class="style-1">{$category.name|escape}</h1>    
+
+<!-- plugin hook: 'frontend_category' -->
+{* @event frontend_category.%plugin_id% *}
+{foreach $frontend_category as $_}{$_}{/foreach}
+
+   
+
+<!-- description -->
+{if $category.description}
+<div class="category-info">
+    <p>{$category.description}</p>
+</div>
+{/if}
+
+
+<!-- subcategories -->
+{if $category.subcategories}
+<div class="sub-categories">
+    {foreach $category.subcategories as $sc}
+    <a href="{$sc.url}">{$sc.name|escape}</a><br />
+    {/foreach}
+</div>
+{/if}
+
+<div class="product-filter">
+    {$sorting = !empty($category.params.enable_sorting)}
+    {if !empty($sorting)}
+    <!-- sorting -->
+    {$sort_fields = ['rating' => '[`Customer rating`]', 'total_sales' => '[`Bestsellers`]', 'price' => '[`Price`]', 'name' => '[`Name`]', 'create_datetime'=>'[`Date added`]', 'stock' => '[`In stock`]']}
+    {if !isset($active_sort)}
+    {$active_sort = $wa->get('sort', 'create_datetime')}
+    {/if}
+    <ul class="menu-h sorting">
+        <li>[`Sort by`]:</li>
+        {if !empty($category) && !$category.sort_products}
+        <li{if !$active_sort} class="selected"{/if}><a href="{$wa->currentUrl(0, 1)}">[`New & Popular`]</a></li>
+        {/if}
+        {foreach $sort_fields as $sort => $name}
+        <li{if $active_sort == $sort} class="selected"{/if}>{$wa->shop->sortUrl($sort, $name, $active_sort)}</li>
+        {if $wa->get('sort') == $sort}{$wa->title( $wa->title()|cat:' — '|cat:$name)}{/if}
+        {/foreach}
+    </ul>
+    {/if}
+    
+    <div class="display"> 
+        <a class="display_view" data-view="list" id="list_a">
+            <i class="fa fa-list"></i>
+        </a>  
+        <a data-view="grid" class="display_view" id="grid_b">
+            <i class="fa fa-th"></i>
+        </a>
+    </div>
+</div>
+
+
+
+<div id="product-list">
+    {if !$products}
+    {if !empty($filters)}
+    [`No products were found.`]
+    {else}
+    [`This category does not contain any products.`]
+    {/if}
+    {else}
+    {include file='list-thumbs.html' sorting=!empty($category.params.enable_sorting)}
+    {*
+    or use the line below to change product list view
+    {include file='list-table.html' sorting=!empty($category.params.enable_sorting)}
+    *}
+    {/if}
+</div>
+<script type="text/javascript"><!--
+    $(document).ready(function() {
+        function display_view() {
+            if (view == 'list') {
+                $('.product-grid ').attr('class', 'product-list');
+                $('.product-list ul').removeClass('row');
+                $('.product-list ul li').removeClass('col-sm-4');
+                $('.product-list ul li').find('.image').addClass('col-sm-3');
+                $('.product-list ul li').find('.left').addClass('col-sm-9');
+                $('.product-list ul li').find('>div').attr('class','row');
+                $('#list_a').attr('id','list_b');
+                $('#grid_b').attr('id','grid_a');
+                $.totalStorage('display', 'list');
+                
+            } else {
+                $('.product-list').attr('class', 'product-grid');
+                $('.product-grid ul').addClass('row');
+                $('.product-grid ul li').addClass('col-sm-4');
+                $('.product-grid ul li').find('.image').removeClass('col-sm-3');
+                $('.product-grid ul li').find('.left').removeClass('col-sm-9');
+                $('.product-grid ul li').find('>div').attr('class','padding');
+                $('#list_b').attr('id','list_a');
+                $('#grid_a').attr('id','grid_b');
+                $.totalStorage('display', 'grid');
+            }
+        }
+
+        $('.display .display_view').click(function() {
+            view = $(this).data('view');
+            display_view(view);
+        });
+        view = $.totalStorage('display');
+        
+        if (view) {
+            display_view(view);
+        } else {
+            display_view('grid');
+        }
+    });
+//--></script> 

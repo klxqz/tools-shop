@@ -1,0 +1,42 @@
+<!-- shop app css -->
+<link href="{$wa_active_theme_url}tools.shop.css?v{$wa_theme_version}" rel="stylesheet" type="text/css">
+<!-- Camera slideshow v1.3.3 -->
+<link href="{$wa_active_theme_url}camera.css"  rel="stylesheet" type="text/css" />
+<!-- photo swipe -->
+<link href="{$wa_active_theme_url}photoswipe.css"  rel="stylesheet" type="text/css" />
+<!-- bx-slider -->
+<link href="{$wa_active_theme_url}jquery.bxslider.css"  rel="stylesheet" type="text/css" />
+<!-- fancybox -->
+<link rel="stylesheet" type="text/css" href="{$wa_active_theme_url}jquery.fancybox-1.3.4.css"  media="screen" />
+
+
+<!-- js -->
+<script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.core.js?v{$wa->version(true)}"></script>
+<script type="text/javascript" src="{$wa_active_theme_url}lazyloading.js?v{$wa_theme_version}"></script>
+<script type="text/javascript" src="{$wa_app_static_url}js/lazy.load.js?v{$wa->version()}"></script>
+<script type="text/javascript" src="{$wa_active_theme_url}tools.shop.js?v{$wa_theme_version}"></script>
+<script type="text/javascript" src="{$wa_active_theme_url}jquery.total-storage.min.js"></script>
+
+<!-- Camera slideshow v1.3.3 -->
+<script type='text/javascript' src='{$wa_active_theme_url}jquery.mobile.customized.min.js'></script>
+<script type='text/javascript' src='{$wa_active_theme_url}jquery.easing.1.3.js'></script> 
+<script type='text/javascript' src='{$wa_active_theme_url}camera.min.js'></script>
+<!-- bx-slider -->
+<script type="text/javascript" language="javascript" src="{$wa_active_theme_url}jquery.bxslider.min.js" ></script>
+<!-- photo swipe -->
+<script type="text/javascript" language="javascript" src="{$wa_active_theme_url}klass.min.js" ></script>
+<script type="text/javascript" language="javascript" src="{$wa_active_theme_url}code.photoswipe.jquery-3.0.5.js" ></script>
+<!-- elevateZoom -->
+<script type="text/JavaScript" src="{$wa_active_theme_url}jquery.elevateZoom-3.0.8.min.js" ></script>
+<!-- fancybox -->
+<script type="text/javascript" src="{$wa_active_theme_url}jquery.fancybox-1.3.4.pack.js" ></script>
+<!-- jcarousel -->
+<script type="text/javascript" src="{$wa_active_theme_url}jquery.jcarousel.min.js" ></script>
+{if !empty($nofollow)}
+<!-- "nofollow" for pages not to be indexed, e.g. customer account -->
+<meta name="robots" content="noindex,nofollow" />
+{/if}
+
+<!-- plugin hook: 'frontend_head' -->
+{* @event frontend_head.%plugin_id% *}
+{foreach $frontend_head as $_}{$_}{/foreach}

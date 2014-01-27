@@ -1,0 +1,234 @@
+<div class="product-info" itemscope itemtype="http://schema.org/Product">
+    <div class="row">
+
+        <div class="col-sm-4">
+            <ul class="menu-h product-menu">
+                <li class="selected"><a href="{$wa->shop->productUrl($product)}">[`Overview`]</a></li>
+                <li>
+                    <a href="{$wa->shop->productUrl($product, 'reviews')}">[`Reviews`]</a>
+                    <span class="hint">{$reviews_total_count}</span>
+                </li>
+                {foreach $product.pages as $page}
+                <li><a href="{$wa->shop->productUrl($product, 'page', ['page_url' => $page.url])}">{$page.name|escape}</a></li>
+                {/foreach}
+
+                <!-- plugin hook: 'frontend_product.menu' -->
+                {* @event frontend_product.%plugin_id%.menu *}
+                {foreach $frontend_product as $_}{$_.menu}{/foreach}
+
+            </ul>
+            <h1 class="view" itemprop="name">{$product.name|escape}</h1>
+            {if $product.images}
+            <script type="text/javascript">
+                jQuery(document).ready(function() {
+                    var myPhotoSwipe = $("#gallery a").photoSwipe({
+                        enableMouseWheel: false, enableKeyboard: false, captionAndToolbarAutoHideDelay: 0
+                    });
+                });
+            </script>
+            
+            <div id="full_gallery">
+                <ul id="gallery">
+                    {foreach $product.images as $image name=f_images}
+                    <li>
+                        <a id="g-product-image-{$image.id}" data-slide="{$smarty.foreach.f_images.iteration-1}" href="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '900x900', false)}">
+                            {$wa->shop->productImgHtml(['id'=> $product.id, 'image_id' => $image.id, 'ext' => $image.ext, 'image_desc' => $image.description], '270x270', ['alt' => $product.name|cat:' - ':$image.description|escape])}
+                        </a>
+                    </li>
+                    {/foreach}
+                </ul>
+
+            </div>
+
+            <div id="default_gallery" class="left spacing">
+                <div class="image"> 
+                    <img id="zoom_01"  data-zoom-image="{shopImage::getUrl(['id' => $product.image_id, 'product_id' => $product.id, 'ext' => $product.ext], '900x900', false)}" src="{shopImage::getUrl(['id' => $product.image_id, 'product_id' => $product.id, 'ext' => $product.ext], '270x270', false)}" title="{$product.name|escape|cat:' ':strip_tags($product.summary)|escape}" alt="{$product.name|escape|cat:' ':strip_tags($product.summary)|escape}" />
+                </div>
+                <div class="image-additional">
+                    <ul id="image-additional">
+                        {foreach $product.images as $image}
+                        <li>
+                            <a href="#" id="product-image-{$image.id}" data-image="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '270x270', false)}" data-zoom-image="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '900x900', false)}">
+                                {$wa->shop->productImgHtml(['id'=> $product.id, 'image_id' => $image.id, 'ext' => $image.ext, 'image_desc' => $image.description], '70x70', ['alt' => $product.name|cat:' - ':$image.description|escape])}
+                            </a>
+                        </li>
+                        {/foreach}
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            {/if}
+        </div>
+        <div class="col-sm-8">
+            <h1>{$product.name|escape}</h1>
+            <div class="description">
+                <!-- product page navigation -->
+
+                {include file="product.cart.html" inline}
+
+
+                <!-- plugin hook: 'frontend_product.cart' -->
+                {* @event frontend_product.%plugin_id%.cart *}
+                {foreach $frontend_product as $_}{$_.cart}{/foreach}
+
+                <div class="clear"></div>
+                <div class="review">
+                    <div>
+                        {if !empty($product.rating) && $product.rating > 0}
+                        <div class="rating nowrap" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" title="{sprintf('[`Average user rating: %s / 5`]', $product.rating)}">
+                            {$wa->shop->ratingHtml($product.rating, 16)}
+                            <span itemprop="ratingValue" style="display: none;">{$product.rating}</span>
+                            <span itemprop="reviewCount" style="display: none;">{$reviews_total_count}</span>
+                        </div>
+                        {/if}
+                        <div class="btn-rew">
+                            <a onclick="document.getElementById('tab-review').scrollIntoView();">[`Reviews`]</a>
+                            <a href="{$wa->shop->productUrl($product, 'reviews')}"><i class="fa fa-pencil"></i>[`Write a review`]</a>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+                <div class="share">
+                    <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+                    <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"></div> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    {if $product.description}
+    <div class="tabs">
+        <div class="tab-heading">
+            Описание		
+        </div>
+        <div class="tab-content" itemprop="description">
+            {$product.description}
+
+            <!-- plugin hook: 'frontend_product.block' -->
+            {* @event frontend_product.%plugin_id%.block *}
+            {foreach $frontend_product as $_}{$_.block}{/foreach}
+        </div>
+    </div>
+    {/if}
+
+    <!-- product features -->
+    {if $product.features}
+    <div class="tabs">
+        <div class="tab-heading">
+            Характеристики		
+        </div>
+        <div class="tab-content">
+
+            <table class="attribute table table-bordered features" id="product-features">
+                {foreach $product.features as $f_code => $f_value}
+                <tr{if $features[$f_code].type == 'divider'} class="divider"{/if}>
+                    <td class="name">
+                        {$features[$f_code].name|escape}
+                    </td>
+                    <td class="value" itemprop="{$f_code|escape}">
+                        {if is_array($f_value)}
+                        {if $features[$f_code].type == 'color'}
+                        {implode('<br /> ', $f_value)}
+                        {else}
+                        {implode(', ', $f_value)}
+                        {/if}
+                        {else}
+                        {$f_value}
+                        {/if}
+                    </td>
+                </tr>
+                {/foreach}
+            </table>
+        </div>
+    </div>
+    {/if}
+
+    <div class="tabs" id="tab-review">
+        <div class="tab-heading">
+            {sprintf('[`%s reviews`]', $product.name|escape)}		
+        </div>
+        <div class="tab-content">
+            {if $reviews}
+            <ul class="menu-v with-icons">
+                {foreach $reviews as $review}
+                <li data-id={$review.id} data-parent-id="0">
+                    {include file="review.html" reply_allowed=false inline}
+                </li>
+                {/foreach}
+            </ul>
+            {/if}
+            {if !$reviews}
+            <p>{sprintf('[`Be the first to <a href="%s">write a review</a> of this product!`]', 'reviews/')}</p>
+            {else}
+            {sprintf(_w(
+            'Read <a href="%s">all %d review</a> on %s', 
+            'Read <a href="%s">all %d reviews</a> on %s', 
+            $reviews_total_count, false
+            ), 'reviews/', $reviews_total_count, $product.name|escape)
+            }
+            {/if}        
+        </div>
+    </div>
+    <!-- categories -->
+    {if $product.categories && count($product.categories)>1}
+    <div class="tabs">
+        <div class="tab-heading">
+            [`Categories`]:	
+        </div>
+        <div class="tab-content">
+            <b>[`Categories`]:</b>
+            {foreach $product.categories as $c}{if $c.status}
+            <span class="product-info"><a href="{$wa->getUrl('/frontend/category', ['category_url' => $c.full_url])}">{$c.name|escape}</a></span>
+            {/if}{/foreach}
+        </div>
+    </div>
+    {/if}
+    {if $product.tags}
+    <div class="tabs">
+        <div class="tab-heading">
+            [`Tags`]:	
+        </div>
+        <div class="tab-content">
+            <!-- tags -->
+            <div class="tags">
+                <b>[`Tags`]:</b>
+                {foreach $product.tags as $t}
+                <a href="{$wa->getUrl('/frontend/tag', ['tag' => urlencode($t)])}">{$t}</a>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+    {/if}
+    
+    <!-- plugin hook: 'frontend_product.block_aux' -->
+            {* @event frontend_product.%plugin_id%.block_aux *}
+            {foreach $frontend_product as $_}{$_.block_aux}{/foreach} 
+
+</div>
+
+<!-- RELATED PRODUCTS -->
+{$upselling = $product->upSelling()}
+{$crossselling = $product->crossSelling()}
+
+{if $upselling}
+<h3 class="style-1 mt0">[`See also`]</h3>
+<div  class="related">
+    <div class="box-product"> 
+        {include file="list-slider.html" products=$upselling}
+    </div>
+</div>
+{/if}
+{if $crossselling}
+<h3 class="style-1 mt0">{sprintf('[`Customers who bought %s also bought`]', $product.name|escape)}</h3>
+<div  class="related">
+    <div class="box-product"> 
+        {include file="list-slider.html" products=$crossselling}
+    </div>
+</div>
+{/if}
+
+
