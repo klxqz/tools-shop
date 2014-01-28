@@ -12,16 +12,14 @@
 <div class="clear"></div>
 {/if}
 
-{if $wa->site->pages()}
+
+{if $wa->shop->pages()}
 <div class="box category">
     <div class="box-heading">Информация</div>
     <div class="box-content">
-        {if isset($category)}{$selected_category=$category.id}{else}{$selected_category=null}{/if}
-        {$categories = $wa->shop->categories(0, null, true)}
         <div class="box-category">
             <!-- page tree -->
-            {wa_print_tree tree=$wa->site->pages() class="menu-v" attrs = 'id="page-list"' elem ='<a href=":url">:name</a>' collapsible_class='parent' selected=$page.id|default:0 unfolded=true}
-
+            {wa_print_tree tree=$wa->shop->pages() class="menu-v" attrs = 'id="page-list"' elem ='<a href=":url" title=":title">:name</a>' collapsible_class='parent' selected=$wa->param('page_id')}
         </div>
     </div>
 </div>

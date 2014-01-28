@@ -23,7 +23,7 @@
                             <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{$p.name}{/if}">{$p.name}</a>
                         </div>
                     </h5>
-                    {if $p.summary}<p class="description" itemprop="description">{$p.summary}</p>{/if}
+                    {if $p.summary}<div class="description" itemprop="description">{$p.summary}</div>{/if}
 
                     <div itemprop="offers" class="offers" itemscope itemtype="http://schema.org/Offer">
                         <div class="price">
