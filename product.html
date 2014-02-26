@@ -1,3 +1,6 @@
+<script type="text/javascript" src="{$wa_url}wa-content/js/jquery-plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="{$wa_theme_url}product.js"></script>
+
 <div class="product-info" itemscope itemtype="http://schema.org/Product">
     <div class="row">
 
@@ -63,13 +66,13 @@
             <h1>{$product.name|escape}</h1>
             <div class="description">
                 <!-- product page navigation -->
-
+                 
+                <div class="cart">
                 {include file="product.cart.html" inline}
-
-
                 <!-- plugin hook: 'frontend_product.cart' -->
                 {* @event frontend_product.%plugin_id%.cart *}
                 {foreach $frontend_product as $_}{$_.cart}{/foreach}
+                </div>
 
                 <div class="clear"></div>
                 <div class="review">
