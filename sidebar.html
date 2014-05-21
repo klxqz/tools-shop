@@ -69,11 +69,11 @@
 {/if} 
 
 
-{if $latest_posts = $wa->blog->posts()}
+{if $wa->blog && $wa->blog->posts()}
 <div class="box man">
     <div class="box-heading"><span>Новости</span></div>
     <div class="box-content">
-        {foreach $latest_posts as $post}
+        {foreach $wa->blog->posts() as $post}
         <div class="short-post">
             <h3>
                 <a href="{$post.link}">{$post.title}</a>
@@ -101,12 +101,12 @@
 </div>
 {/if}
 
-{if $photos = $wa->photos->photos()}
+{if $wa->photos && $wa->photos->photos()}
 <div class="box man" id="last_photos">
     <div class="box-heading"><span>Последние фото</span></div>
     <div class="box-content">
         <ul class="view-thumbs">
-            {foreach from=$photos item=photo}
+            {foreach from=$wa->photos->photos() item=photo}
             <li{if $photo.stack_count > 0} class="stacked"{/if}>
                 <div class="image">
                     {if empty($photo.frontend_link)}
