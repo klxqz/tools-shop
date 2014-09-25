@@ -2,10 +2,10 @@
 {$categories = $wa->shop->categories(0, null, true)}
 {if $categories}
 <div class="box category">
-    <div class="box-heading">Категории</div>
+    <div class="box-heading">[`Catalog`]</div>
     <div class="box-content">
         <div class="box-category">
-            {wa_print_tree tree=$categories selected=$selected_category unfolded=true collapsible_class='parent' class="menu-v category-tree" elem ='<a href=":url" title=":name">:name</a>'}
+            {wa_print_tree tree=$categories selected=$selected_category unfolded=true collapsible_class='parent' class=" category-tree" elem ='<a href=":url" title=":name">:name</a>'}
         </div>
     </div>
 </div>
@@ -15,11 +15,11 @@
 
 {if $wa->shop->pages()}
 <div class="box category">
-    <div class="box-heading">Информация</div>
+    <div class="box-heading">[`Information`]</div>
     <div class="box-content">
         <div class="box-category">
             <!-- page tree -->
-            {wa_print_tree tree=$wa->shop->pages() class="menu-v" attrs = 'id="page-list"' elem ='<a href=":url" title=":title">:name</a>' collapsible_class='parent' selected=$wa->param('page_id')}
+            {wa_print_tree tree=$wa->shop->pages() attrs = 'id="page-list"' elem ='<a href=":url" title=":title">:name</a>' collapsible_class='parent' selected=$wa->param('page_id')}
         </div>
     </div>
 </div>

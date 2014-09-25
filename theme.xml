@@ -39,10 +39,6 @@
             <description locale="en_US">menu-gadget block</description>
             <description locale="ru_RU">Блок "menu-gadget"</description>
         </file>
-        <file path="list-table.html" custom="0">
-            <description locale="en_US">Product list table view</description>
-            <description locale="ru_RU">Список товаров таблицей</description>
-        </file>
         <file path="product.html" custom="0">
             <description locale="en_US">Dedicated product page</description>
             <description locale="ru_RU">Шаблон основной страницы товара</description>
@@ -190,6 +186,24 @@
             <name locale="en_US">AJAX-enabled product by-feature filtering</name>
             <name locale="ru_RU">AJAX-фильтры товаров по характеристикам</name>
         </setting>
+        
+        <setting var="use_logocategory_plugin" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">use "logo category" plugin</name>
+            <name locale="ru_RU">
+                Использовать плагин "логотип категории" для вывода изображений.
+                <![CDATA[
+                <a href="http://www.webasyst.ru/store/plugin/shop/logocategory/">Купить и установить плагин "Логотип категории"</a>	
+                ]]>
+            </name>
+        </setting>
+        
+        <setting var="products_per_page" control_type="text">
+            <value>12,24,30,50,100</value>
+            <name locale="en_US">Number of products per page</name>
+            <name locale="ru_RU">Количество товаров на странице</name>
+        </setting>
+        
     </settings>
 
 </theme>

@@ -1,4 +1,16 @@
 $(document).ready(function() {
+    $('#selectProductSort option').click(function() {
+        location.assign($(this).val());
+    });
+
+    $('#nb_item').change(function() {
+        if ($(this).val()) {
+            $.cookie('products_per_page', $(this).val(), {expires: 30, path: '/'});
+        } else {
+            $.cookie('products_per_page', '', {expires: 0, path: '/'});
+        }
+        location.reload();
+    });
 
     $('.dialog').on('click', 'a.dialog-close', function() {
         $(this).closest('.dialog').hide().find('.cart').empty();
@@ -11,7 +23,7 @@ $(document).ready(function() {
         }
     });
 
-    $(".content").on('submit', '.product-list form.addtocart', function() {
+    $("#content").on('submit', '#product-list form.addtocart,.related-slider form.addtocart', function() {
         var f = $(this);
         if (f.data('url')) {
             var d = $('#dialog');
@@ -29,43 +41,56 @@ $(document).ready(function() {
         }
         $.post(f.attr('action') + '?html=1', f.serialize(), function(response) {
             if (response.status == 'ok') {
-                var cart_total = $(".cart-total");
-                if ($(window).scrollTop() >= 35) {
-                    cart_total.closest('#cart').addClass("fixed");
-                }
-                cart_total.closest('#cart').removeClass('empty');
-                if ($("table.cart").length) {
-                    $(".content").parent().load(location.href, function() {
-                        cart_total.html(response.data.total);
+                var cart = $('#cart');
+                var origin = f.closest('li');
+                var block = $('<div></div>').append(origin.html());
 
-                    });
-                } else {
-                    if (f.closest(".product-list").get(0).tagName.toLowerCase() == 'table') {
-                        var origin = f.closest('tr');
-                        var block = $('<div></div>').append($('<table></table>').append(origin.clone()));
+                block.css({
+                    'z-index': 10,
+                    top: origin.offset().top,
+                    left: origin.offset().left,
+                    width: origin.width() + 'px',
+                    height: origin.height() + 'px',
+                    position: 'absolute',
+                    overflow: 'hidden'
+                }).insertAfter(origin).animate({
+                    top: cart.offset().top,
+                    left: cart.offset().left,
+                    width: 0,
+                    height: 0,
+                    opacity: 0.5
+                }, 500, function() {
+                    $(this).remove();
+                    if (cart.find('tr[data-id=' + response.data.item_id + ']').length) {
+                        var item = cart.find('tr[data-id=' + response.data.item_id + ']');
+                        var quantity = parseInt(item.find('.quantity span').text());
+                        item.find('.quantity span').text(quantity + 1);
+                        cart.find('.shopping_cart_total').html(response.data.total);
+                        cart.find('#cart-total2').html(response.data.count);
+                        cart.find('.shopping_cart_discount').html(response.data.discount);
                     } else {
-                        var origin = f.closest('li');
-                        var block = $('<div></div>').append(origin.html());
+                        var info = origin.find('.ajax_product_info');
+                        var tpl_data = {
+                            url: info.data('url'),
+                            name: info.data('name'),
+                            img: info.data('img'),
+                            price: info.data('price'),
+                            quantity: 1,
+                            id: response.data.item_id
+                        };
+                        $('#cart_block_list_item_tmpl').tmpl(tpl_data).appendTo('.mini-cart-info table tbody');
+                        cart.find('.shopping_cart_total').html(response.data.total);
+                        cart.find('#cart-total2').html(response.data.count);
+                        cart.find('.shopping_cart_discount').html(response.data.discount);
                     }
-                    block.css({
-                        'z-index': 10,
-                        top: origin.offset().top,
-                        left: origin.offset().left,
-                        width: origin.width() + 'px',
-                        height: origin.height() + 'px',
-                        position: 'absolute',
-                        overflow: 'hidden'
-                    }).insertAfter(origin).animate({
-                        top: cart_total.offset().top,
-                        left: cart_total.offset().left,
-                        width: 0,
-                        height: 0,
-                        opacity: 0.5
-                    }, 500, function() {
-                        $(this).remove();
-                        cart_total.html(response.data.total);
-                    });
-                }
+                    $('#notification').html('<div class="success" style="display: none;"><i class="fa fa-thumbs-up"></i>Товар успешно добавлен в корзину!<span class="close"><i class="fa fa-times-circle"></i></span></div>');
+                    $('.success').fadeIn('slow');
+                    setTimeout(function() {
+                        $('.success').fadeOut(1000)
+                    }, 3000);
+
+                });
+
                 if (response.data.error) {
                     alert(response.data.error);
                 }
@@ -89,39 +114,7 @@ $(document).ready(function() {
         });
     });
 });
-/********************************** swipe ********************************************/
-jQuery(document).ready(function() {
-    jQuery('body .swipe-left').swiperight(function() {
-        jQuery('body').addClass('ind');
-    })
-    jQuery('body').swipeleft(function() {
-        jQuery('body').removeClass('ind');
-    })
-    jQuery('#page').click(function() {
-        if (jQuery(this).parents('body').hasClass('ind')) {
-            jQuery(this).parents('body').removeClass('ind');
-            return false
-        }
-    })
-    jQuery('.swipe-control').click(function() {
-        if (jQuery(this).parents('body').hasClass('ind')) {
-            jQuery(this).parents('body').removeClass('ind');
-            return false
-        }
-        else {
-            jQuery(this).parents('body').addClass('ind');
-            return false
-        }
-    })
 
-    $("#zoom_01").elevateZoom({gallery: 'image-additional', cursor: 'pointer', galleryActiveClass: 'active', imageCrossfade: true});
-//pass the images to Fancybox
-    $("#zoom_01").bind("click", function(e) {
-        var ez = $('#zoom_01').data('elevateZoom');
-        $.fancybox(ez.getGalleryList());
-        return false;
-    });
-});
 
 jQuery(document).ready(function() {
     $("#button-cart").click(function() {
@@ -136,28 +129,8 @@ jQuery(document).ready(function() {
     $(".button-search").click(function() {
         $(this).closest('form').submit();
     });
-    
-    
-    $(".addtocart").submit(function() {
-        var f = $(this);
-        $.post(f.attr('action') + '?html=1', f.serialize(), function(response) {
-            if (response.status == 'ok') {
-                var cart_total = $("#cart-total2");
-                console.log(response.data);
-                cart_total.html(response.data.count);
-                $('#notification').html('<div class="success" style="display: none;"><i class="fa fa-thumbs-up"></i>Товар успешно добавлен в корзину!<span class="close"><i class="fa fa-times-circle"></i></span></div>');
-                $('#cart-total-price').html(response.data.total);
-                $('.success').fadeIn('slow');
-                setTimeout(function() {
-                    $('.success').fadeOut(1000)
-                }, 3000);
 
-            } else if (response.status == 'fail') {
-                alert(response.errors);
-            }
-        }, "json");
-        return false;
-    });
+    
 
     $('.success span, .warning span, .attention span, .information span').live('click', function() {
         $(this).parent().fadeOut('slow', function() {

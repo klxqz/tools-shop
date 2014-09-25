@@ -1,33 +1,30 @@
-<h1 class="style-1">
-    {$title}
-</h1>
+<div>
+    <h1 class="style-1">
+        {$title}
+    </h1>
 
-<!-- plugin hook: 'frontend_search' -->
-{* @event frontend_search.%plugin_id% *}
+    <!-- plugin hook: 'frontend_search' -->
+    {* @event frontend_search.%plugin_id% *}
 {foreach $frontend_search as $_}{$_}{/foreach}
 
 {if !$products}
-[`No products were found.`]
+    [`No products were found.`]
 {else}
 
-<div class="product-filter">
-    <div class="display"> 
-        <a class="display_view" data-view="list" id="list_a">
-            <i class="fa fa-list"></i>
-        </a>  
-        <a data-view="grid" class="display_view" id="grid_b">
-            <i class="fa fa-th"></i>
-        </a>
+    <div class="product-filter">
+        <div class="display"> 
+            <a class="display_view" data-view="list" id="list_a">
+                <i class="fa fa-list"></i>
+            </a>  
+            <a data-view="grid" class="display_view" id="grid_b">
+                <i class="fa fa-th"></i>
+            </a>
+        </div>
     </div>
-</div>
 
-<div id="product-list">
-    {include file='list-thumbs.html'}
-</div>
-{*
-or use the line below if you want plain table view instead of thumbs
-{include file='list-thumbs.html'}
-*}
+    <div id="product-list">
+        {include file='list-thumbs.html'}
+    </div>
 {/if}
 <script type="text/javascript"><!--
     $(document).ready(function() {
@@ -38,20 +35,20 @@ or use the line below if you want plain table view instead of thumbs
                 $('.product-list ul li').removeClass('col-sm-4');
                 $('.product-list ul li').find('.image').addClass('col-sm-3');
                 $('.product-list ul li').find('.left').addClass('col-sm-9');
-                $('.product-list ul li').find('>div').attr('class','row');
-                $('#list_a').attr('id','list_b');
-                $('#grid_b').attr('id','grid_a');
+                $('.product-list ul li').find('>div').attr('class', 'row');
+                $('#list_a').attr('id', 'list_b');
+                $('#grid_b').attr('id', 'grid_a');
                 $.totalStorage('display', 'list');
-                
+
             } else {
                 $('.product-list').attr('class', 'product-grid');
                 $('.product-grid ul').addClass('row');
                 $('.product-grid ul li').addClass('col-sm-4');
                 $('.product-grid ul li').find('.image').removeClass('col-sm-3');
                 $('.product-grid ul li').find('.left').removeClass('col-sm-9');
-                $('.product-grid ul li').find('>div').attr('class','padding');
-                $('#list_b').attr('id','list_a');
-                $('#grid_a').attr('id','grid_b');
+                $('.product-grid ul li').find('>div').attr('class', 'padding');
+                $('#list_b').attr('id', 'list_a');
+                $('#grid_a').attr('id', 'grid_b');
                 $.totalStorage('display', 'grid');
             }
         }
@@ -61,7 +58,7 @@ or use the line below if you want plain table view instead of thumbs
             display_view(view);
         });
         view = $.totalStorage('display');
-        
+
         if (view) {
             display_view(view);
         } else {
@@ -69,3 +66,4 @@ or use the line below if you want plain table view instead of thumbs
         }
     });
 //--></script> 
+</div>

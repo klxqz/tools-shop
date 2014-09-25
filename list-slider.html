@@ -1,49 +1,55 @@
 {if $products}
-<ul class="related-slider">
-    {foreach $products as $p}
-    <li itemscope itemtype ="http://schema.org/Product"  class="related-info">
-        <div class="image">
-            <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{/if}">
-                {$badge_html = $wa->shop->badgeHtml($p.badge)}
-                {if $badge_html}
-                <div class="corner top right">{$badge_html}</div>
-                {/if}
-                {$wa->shop->productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'default' => "`$wa_theme_url`img/dummy200.png"])}
-            </a>
+    <ul class="related-slider">
+        {foreach $products as $p}
+            <li itemscope itemtype ="http://schema.org/Product"  class="related-info">
+                <div class="ajax_product_info" 
+                     data-price="{shop_currency_html($p.price)|escape}"
+                     data-name="{$p.name|escape}" 
+                     data-url="{$p.frontend_url}" 
+                     data-img="{shopImage::getUrl(['id' => $p.image_id, 'product_id' => $p.id, 'ext' => $p.ext], '47x47', false)}"
+                     ></div>
+                <div class="image">
+                    <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{/if}">
+                        {$badge_html = $wa->shop->badgeHtml($p.badge)}
+                        {if $badge_html}
+                            <div class="corner top right">{$badge_html}</div>
+                        {/if}
+                        {$wa->shop->productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                    </a>
 
-        </div>
-        <h5 itemprop="name">
-            <div class="name">
-                <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{$p.name}{/if}">{$p.name}</a>
-            </div>
-        </h5>
-        <div itemprop="offers" class="offers" itemscope itemtype="http://schema.org/Offer">
-            <div class="price">
-                <span itemprop="price" class="price-new">{shop_currency_html($p.price)}</span>
-                {if $p.compare_price > 0}<span class="price-old"> {shop_currency_html($p.compare_price)} </span>{/if}
-            </div>
-
-            {if $wa->shop->settings('ignore_stock_count') || $p.count === null || $p.count > 0}
-            <form class="addtocart" {if $p.sku_count > 1}data-url="{$p.frontend_url}?cart=1"{/if} method="post" action="{$wa->getUrl('/frontendCart/add')}">
-                <input type="hidden" name="product_id" value="{$p.id}">
-
-                <div class="cart-button">
-                    <div class="cart">
-                        <a title="[`Add to cart`]" class="button">
-                            <i class="fa fa-shopping-cart"></i><span>[`Add to cart`]</span>
-                        </a>
-                    </div>
                 </div>
-            </form>
-            <link itemprop="availability" href="http://schema.org/InStock" />
-            {else}
-            <link itemprop="availability" href="http://schema.org/OutOfStock" />
-            {/if}
-        </div>
-        {if $p.rating > 0}
-        <div class="rating nowrap">{$wa->shop->ratingHtml($p.rating)}</div>
-        {/if}
-    </li>
-    {/foreach}
-</ul>
+                <h5 itemprop="name">
+                    <div class="name">
+                        <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{$p.name}{/if}">{$p.name}</a>
+                    </div>
+                </h5>
+                <div itemprop="offers" class="offers" itemscope itemtype="http://schema.org/Offer">
+                    <div class="price">
+                        <span itemprop="price" class="price-new">{shop_currency_html($p.price)}</span>
+                        {if $p.compare_price > 0}<span class="price-old"> {shop_currency_html($p.compare_price)} </span>{/if}
+                    </div>
+
+                    {if $wa->shop->settings('ignore_stock_count') || $p.count === null || $p.count > 0}
+                        <form class="addtocart" {if $p.sku_count > 1}data-url="{$p.frontend_url}?cart=1"{/if} method="post" action="{$wa->getUrl('/frontendCart/add')}">
+                            <input type="hidden" name="product_id" value="{$p.id}">
+
+                            <div class="cart-button">
+                                <div class="cart">
+                                    <a title="[`Add to cart`]" class="button">
+                                        <i class="fa fa-shopping-cart"></i><span>[`Add to cart`]</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                        <link itemprop="availability" href="http://schema.org/InStock" />
+                    {else}
+                        <link itemprop="availability" href="http://schema.org/OutOfStock" />
+                    {/if}
+                </div>
+                {if $p.rating > 0}
+                    <div class="rating nowrap">{$wa->shop->ratingHtml($p.rating)}</div>
+                {/if}
+            </li>
+        {/foreach}
+    </ul>
 {/if}

@@ -1,48 +1,111 @@
+{function name=sortOption}
+    {if $active_sort === null}
+        {$active_sort = waRequest::get('sort')}
+    {/if}
+
+    {$inverted = in_array($sort, array('rating', 'create_datetime', 'total_sales', 'count', 'stock'))}
+    {$data = waRequest::get()}
+    {$data['sort'] = $sort}
+    {if $sort == $active_sort}
+        {if waRequest::get('order') == 'asc'}
+            {$data['order'] = 'desc'}
+        {else}
+            {$data['order'] = 'asc'}
+        {/if}
+    {else}
+        {if $inverted}
+            {$data['order'] = 'desc'}
+        {else}
+            {$data['order'] = 'asc'}
+        {/if}
+    {/if}
+    <option value="?{http_build_query($data)}" {if $active_sort == $sort}selected="selected"{/if}>{$name} {if $active_sort == $sort}{if $data['order'] == 'asc'}&uarr;{else}&darr;{/if}{/if}</option>
+{/function}
+
 <h1 class="style-1">{$category.name|escape}</h1>    
 
 <!-- plugin hook: 'frontend_category' -->
 {* @event frontend_category.%plugin_id% *}
 {foreach $frontend_category as $_}{$_}{/foreach}
 
-   
+
 
 <!-- description -->
 {if $category.description}
-<div class="category-info">
-    <p>{$category.description}</p>
-</div>
+    <div class="category-info">
+        <p>{$category.description}</p>
+    </div>
 {/if}
 
 
 <!-- subcategories -->
 {if $category.subcategories}
-<div class="sub-categories">
-    {foreach $category.subcategories as $sc}
-    <a href="{$sc.url}">{$sc.name|escape}</a><br />
-    {/foreach}
-</div>
+    <div class="box subcat">
+        <div class="box-heading">Подкатегории</div>
+        <div class="box-content">
+
+            <div class="box-product box-subcat">
+                <ul class="row">	
+                    {foreach $category.subcategories as $sc}
+                        <li class="cat-height  col-sm-3">
+                            {if $theme_settings.use_logocategory_plugin && shopLogocategoryPlugin::getImgUrl($sc.id)}
+                                <div class="image">
+                                    <a href="{$sc.url}"><img alt="{$sc.name|escape}" src="{shopLogocategoryPlugin::getImgUrl($sc.id)}"></a>
+                                </div>
+                            {/if}
+                            <div class="name subcatname"><a href="{$sc.url}">{$sc.name|escape}  ({$sc.count})</a></div>
+                        </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </div>
 {/if}
 
 <div class="product-filter">
-    {$sorting = !empty($category.params.enable_sorting)}
+
+
+
+    {$sorting=!empty($category.params.enable_sorting)}
     {if !empty($sorting)}
-    <!-- sorting -->
-    {$sort_fields = ['rating' => '[`Customer rating`]', 'total_sales' => '[`Bestsellers`]', 'price' => '[`Price`]', 'name' => '[`Name`]', 'create_datetime'=>'[`Date added`]', 'stock' => '[`In stock`]']}
-    {if !isset($active_sort)}
-    {$active_sort = $wa->get('sort', 'create_datetime')}
-    {/if}
-    <ul class="menu-h sorting">
-        <li>[`Sort by`]:</li>
-        {if !empty($category) && !$category.sort_products}
-        <li{if !$active_sort} class="selected"{/if}><a href="{$wa->currentUrl(0, 1)}">[`New & Popular`]</a></li>
+        <!-- sorting -->
+        {$sort_fields = ['rating' => '[`Customer rating`]', 'total_sales' => '[`Bestsellers`]', 'price' => '[`Price`]', 'name' => '[`Name`]', 'create_datetime'=>'[`Date added`]', 'stock' => '[`In stock`]']}
+        {if !isset($active_sort)}
+            {$active_sort = $wa->get('sort', 'create_datetime')}
         {/if}
-        {foreach $sort_fields as $sort => $name}
-        <li{if $active_sort == $sort} class="selected"{/if}>{$wa->shop->sortUrl($sort, $name, $active_sort)}</li>
-        {if $wa->get('sort') == $sort}{$wa->title( $wa->title()|cat:' — '|cat:$name)}{/if}
-        {/foreach}
-    </ul>
+
+        <div class="sort"><b>Sort By:</b>
+            <select id="selectProductSort">
+                {if !empty($category) && !$category.sort_products}
+                    <option value="{$wa->currentUrl(0, 1)}" {if !$active_sort} selected="selected"{/if} >[`New & Popular`]</option>
+                {/if}
+                {foreach $sort_fields as $sort => $name}
+                    {$params = ['sort' => $sort, 'name' => $name, 'active_sort' => $active_sort]}
+                    {sortOption $params}
+                    {if $wa->get('sort') == $sort}
+                        {$wa->title( $wa->title()|cat:' — '|cat:$name)}
+                    {/if}
+                {/foreach}
+            </select>
+        </div>
     {/if}
-    
+
+    {$products_pers = explode(',',$theme_settings.products_per_page)}
+    <div class="limit"><b>Show:</b>
+        <select id="nb_item" name="nb_item">
+            {if isset($smarty.cookies.products_per_page)}
+                {$products_per_page = $smarty.cookies.products_per_page}
+            {else}
+                {$products_per_page = 50}
+            {/if}
+            {foreach $products_pers as $products_per}
+                <option value="{$products_per}" {if $products_per_page  == $products_per}selected="selected"{/if} >{$products_per}</option>
+            {/foreach}
+        </select>
+    </div>
+
+
+
     <div class="display"> 
         <a class="display_view" data-view="list" id="list_a">
             <i class="fa fa-list"></i>
@@ -57,17 +120,13 @@
 
 <div id="product-list">
     {if !$products}
-    {if !empty($filters)}
-    [`No products were found.`]
+        {if !empty($filters)}
+            [`No products were found.`]
+        {else}
+            [`This category does not contain any products.`]
+        {/if}
     {else}
-    [`This category does not contain any products.`]
-    {/if}
-    {else}
-    {include file='list-thumbs.html' sorting=!empty($category.params.enable_sorting)}
-    {*
-    or use the line below to change product list view
-    {include file='list-table.html' sorting=!empty($category.params.enable_sorting)}
-    *}
+        {include file='list-thumbs.html' sorting=!empty($category.params.enable_sorting)}
     {/if}
 </div>
 <script type="text/javascript"><!--
@@ -79,20 +138,20 @@
                 $('.product-list ul li').removeClass('col-sm-4');
                 $('.product-list ul li').find('.image').addClass('col-sm-3');
                 $('.product-list ul li').find('.left').addClass('col-sm-9');
-                $('.product-list ul li').find('>div').attr('class','row');
-                $('#list_a').attr('id','list_b');
-                $('#grid_b').attr('id','grid_a');
+                $('.product-list ul li').find('>div').attr('class', 'row');
+                $('#list_a').attr('id', 'list_b');
+                $('#grid_b').attr('id', 'grid_a');
                 $.totalStorage('display', 'list');
-                
+
             } else {
                 $('.product-list').attr('class', 'product-grid');
                 $('.product-grid ul').addClass('row');
                 $('.product-grid ul li').addClass('col-sm-4');
                 $('.product-grid ul li').find('.image').removeClass('col-sm-3');
                 $('.product-grid ul li').find('.left').removeClass('col-sm-9');
-                $('.product-grid ul li').find('>div').attr('class','padding');
-                $('#list_b').attr('id','list_a');
-                $('#grid_a').attr('id','grid_b');
+                $('.product-grid ul li').find('>div').attr('class', 'padding');
+                $('#list_b').attr('id', 'list_a');
+                $('#grid_a').attr('id', 'grid_b');
                 $.totalStorage('display', 'grid');
             }
         }
@@ -102,7 +161,7 @@
             display_view(view);
         });
         view = $.totalStorage('display');
-        
+
         if (view) {
             display_view(view);
         } else {
