@@ -3,6 +3,7 @@
         padding-top: 0px;
     }
 </style>
+{if $theme_settings.slider}
 <script>
     jQuery(function() {
         jQuery('#camera_wrap_0').camera({
@@ -20,9 +21,9 @@
             mobileAutoAdvance: true,
             barDirection: 'leftToRight',
             barPosition: 'bottom',
-            easing: 'easeInOutExpo',
+                    easing: 'easeInOutExpo',
             fx: 'simpleFade',
-            height: '32.2988%',
+                    height: '32.2988%',
             minHeight: '90px',
             hover: true,
             pagination: true,
@@ -37,22 +38,28 @@
 
 <div class="fluid_container" >
     <div id="camera_wrap_0">
-        
-        <div title="slide-1" data-thumb="#"  data-link="#" data-src="{$wa_active_theme_url}img/slide-1.jpg" >
-        </div>
-        <div title="slide-2" data-thumb="#"  data-link="#" data-src="{$wa_active_theme_url}img/slide-2.jpg" >
-        </div>
-        <div title="slide-3" data-thumb="#"  data-link="#" data-src="{$wa_active_theme_url}img/slide-3.jpg" >
-        </div>
-        <div title="slide-3" data-thumb="#"  data-link="#" data-src="{$wa_active_theme_url}img/slide-4.jpg" >
-        </div>
-        <div title="slide-5" data-thumb="#"  data-link="#" data-src="{$wa_active_theme_url}img/slide-5.jpg" >
-        </div>
-        <div title="slide-6" data-thumb="#"  data-link="#" data-src="{$wa_active_theme_url}img/slide-6.jpg" >
-        </div>
+        {if !empty($theme_settings.slide1)}
+        <div data-link="{$theme_settings.slide1_url}" data-src="{$wa_theme_url}{$theme_settings.slide1}" ></div>
+        {/if}
+        {if !empty($theme_settings.slide2)}
+        <div data-link="{$theme_settings.slide2_url}" data-src="{$wa_theme_url}{$theme_settings.slide2}" ></div>
+        {/if}
+        {if !empty($theme_settings.slide3)}
+        <div data-link="{$theme_settings.slide3_url}" data-src="{$wa_theme_url}{$theme_settings.slide3}" ></div>
+        {/if}
+        {if !empty($theme_settings.slide4)}
+        <div data-link="{$theme_settings.slide4_url}" data-src="{$wa_theme_url}{$theme_settings.slide4}" ></div>
+        {/if}
+        {if !empty($theme_settings.slide5)}
+        <div data-link="{$theme_settings.slide5_url}" data-src="{$wa_theme_url}{$theme_settings.slide5}" ></div>
+        {/if}
+        {if !empty($theme_settings.slide6)}
+        <div data-link="{$theme_settings.slide6_url}" data-src="{$wa_theme_url}{$theme_settings.slide6}" ></div>
+        {/if}
     </div>
     <div class="clear"></div>
 </div>
+{/if}
 
 
 

@@ -69,9 +69,20 @@
 {/if} 
 
 
+{if isset($frontend_nav['brands-plugin'])}
+<div class="box man">
+    <div class="box-heading"><span>[`Brands`]</span></div>
+    <div class="box-content">
+        {$frontend_nav['brands-plugin']}
+        <div class="clear"></div>
+    </div>
+</div>
+{/if}
+
+
 {if $wa->blog && $wa->blog->posts()}
 <div class="box man">
-    <div class="box-heading"><span>Новости</span></div>
+    <div class="box-heading"><span>[`News`]</span></div>
     <div class="box-content">
         {foreach $wa->blog->posts() as $post}
         <div class="short-post">
@@ -103,7 +114,7 @@
 
 {if $wa->photos && $wa->photos->photos()}
 <div class="box man" id="last_photos">
-    <div class="box-heading"><span>Последние фото</span></div>
+    <div class="box-heading"><span>[`Photo`]</span></div>
     <div class="box-content">
         <ul class="view-thumbs">
             {foreach from=$wa->photos->photos() item=photo}
@@ -134,7 +145,7 @@
 <!-- tag cloud -->
 {if $cloud = $wa->shop->tags()}
 <div class="box man">
-    <div class="box-heading"><span>Теги</span></div>
+    <div class="box-heading"><span>[`Tags`]</span></div>
     <div class="box-content">
         <div class="tags">
             {foreach $cloud as $tag}
@@ -148,4 +159,9 @@
 
 <!-- plugin hook: 'frontend_nav' -->
 {* @event frontend_nav.%plugin_id% *}
-{foreach $frontend_nav as $_}{$_}{/foreach}
+{foreach $frontend_nav as $plugin => $_}
+{if $plugin != 'brands-plugin'}
+{$_}
+{/if}
+{/foreach}
+
