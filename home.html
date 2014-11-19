@@ -4,61 +4,61 @@
     }
 </style>
 {if $theme_settings.slider}
-<script>
-    jQuery(function() {
-        jQuery('#camera_wrap_0').camera({
-            fx: 'stampede',
-            navigation: false,
-            playPause: false,
-            thumbnails: false,
-            navigationHover: false,
-            barPosition: 'top',
-            loader: false,
-            time: 3000,
-            transPeriod: 800,
-            alignment: 'center',
-            autoAdvance: true,
-            mobileAutoAdvance: true,
-            barDirection: 'leftToRight',
-            barPosition: 'bottom',
-                    easing: 'easeInOutExpo',
-            fx: 'simpleFade',
-                    height: '32.2988%',
-            minHeight: '90px',
-            hover: true,
-            pagination: true,
-            loaderColor: '#1f1f1f',
-            loaderBgColor: 'transparent',
-            loaderOpacity: 1,
-            loaderPadding: 0,
-            loaderStroke: 3
+    <script>
+        jQuery(function() {
+            jQuery('#camera_wrap_0').camera({
+                fx: 'stampede',
+                navigation: false,
+                playPause: false,
+                thumbnails: false,
+                navigationHover: false,
+                barPosition: 'top',
+                loader: false,
+                time: 3000,
+                transPeriod: 800,
+                alignment: 'center',
+                autoAdvance: true,
+                mobileAutoAdvance: true,
+                barDirection: 'leftToRight',
+                barPosition: 'bottom',
+                        easing: 'easeInOutExpo',
+                fx: 'simpleFade',
+                        height: '32.2988%',
+                minHeight: '90px',
+                hover: true,
+                pagination: true,
+                loaderColor: '#1f1f1f',
+                loaderBgColor: 'transparent',
+                loaderOpacity: 1,
+                loaderPadding: 0,
+                loaderStroke: 3
+            });
         });
-    });
-</script>
+    </script>
 
-<div class="fluid_container" >
-    <div id="camera_wrap_0">
-        {if !empty($theme_settings.slide1)}
-        <div data-link="{$theme_settings.slide1_url}" data-src="{$wa_theme_url}{$theme_settings.slide1}" ></div>
-        {/if}
-        {if !empty($theme_settings.slide2)}
-        <div data-link="{$theme_settings.slide2_url}" data-src="{$wa_theme_url}{$theme_settings.slide2}" ></div>
-        {/if}
-        {if !empty($theme_settings.slide3)}
-        <div data-link="{$theme_settings.slide3_url}" data-src="{$wa_theme_url}{$theme_settings.slide3}" ></div>
-        {/if}
-        {if !empty($theme_settings.slide4)}
-        <div data-link="{$theme_settings.slide4_url}" data-src="{$wa_theme_url}{$theme_settings.slide4}" ></div>
-        {/if}
-        {if !empty($theme_settings.slide5)}
-        <div data-link="{$theme_settings.slide5_url}" data-src="{$wa_theme_url}{$theme_settings.slide5}" ></div>
-        {/if}
-        {if !empty($theme_settings.slide6)}
-        <div data-link="{$theme_settings.slide6_url}" data-src="{$wa_theme_url}{$theme_settings.slide6}" ></div>
-        {/if}
+    <div class="fluid_container" >
+        <div id="camera_wrap_0">
+            {if !empty($theme_settings.slide1)}
+                <div data-link="{$theme_settings.slide1_url}" data-src="{$wa_theme_url}{$theme_settings.slide1}" ></div>
+            {/if}
+            {if !empty($theme_settings.slide2)}
+                <div data-link="{$theme_settings.slide2_url}" data-src="{$wa_theme_url}{$theme_settings.slide2}" ></div>
+            {/if}
+            {if !empty($theme_settings.slide3)}
+                <div data-link="{$theme_settings.slide3_url}" data-src="{$wa_theme_url}{$theme_settings.slide3}" ></div>
+            {/if}
+            {if !empty($theme_settings.slide4)}
+                <div data-link="{$theme_settings.slide4_url}" data-src="{$wa_theme_url}{$theme_settings.slide4}" ></div>
+            {/if}
+            {if !empty($theme_settings.slide5)}
+                <div data-link="{$theme_settings.slide5_url}" data-src="{$wa_theme_url}{$theme_settings.slide5}" ></div>
+            {/if}
+            {if !empty($theme_settings.slide6)}
+                <div data-link="{$theme_settings.slide6_url}" data-src="{$wa_theme_url}{$theme_settings.slide6}" ></div>
+            {/if}
+        </div>
+        <div class="clear"></div>
     </div>
-    <div class="clear"></div>
-</div>
 {/if}
 
 
@@ -72,46 +72,48 @@
 
 
 
-<!-- GENERAL WELCOME TEXT -->
-<div itemscope itemtype="http://schema.org/Store">
-    <h1 class="align-center"><span itemprop="name">{sprintf('[`%s online store`]', $wa->shop->settings('name'))}</span></h1>
-    <meta itemprop="description" content="{$wa->meta('description')|escape}">
-
-    {if $wa->shop->settings('phone')}
-    <p class="align-center large">[`Contact us`]: <strong itemprop="telephone">{$wa->shop->settings('phone')}</strong></p>
-    {/if}
-    <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
-        <meta itemprop="streetAddress" content="">
-        <meta itemprop="addressLocality" content="">
-        <meta itemprop="addressRegion" content="">
-        <meta itemprop="postalCode" content="">
-        <meta itemprop="addressCountry" content="{$wa->shop->settings('country')|upper}">
-    </div>
-
-</div>
-
 {$promos = $wa->shop->productSet('promo')}
 {if $promos}
-<div class="box featured">
-    <div class="box-heading">Лучшие предложения</div>
-    <div class="box-content">
-        <div class="box-product">
-            {include file="list-slider.html" products=$promos inline}
+    <div class="box featured">
+        <div class="box-heading">Лучшие предложения</div>
+        <div class="box-content">
+            <div class="box-product">
+                {include file="list-slider.html" products=$promos inline}
+            </div>
+            <div class="clear"></div>
         </div>
-        <div class="clear"></div>
     </div>
-</div>
 {/if}
 
 {$bestsellers = $wa->shop->productSet('bestsellers')}
 {if $bestsellers}
-<div class="box featured">
-    <div class="box-heading">Хиты продаж</div>
-    <div class="box-content">
-        <div class="box-product">
-            {include file="list-slider.html" products=$bestsellers inline}
+    <div class="box featured">
+        <div class="box-heading">Хиты продаж</div>
+        <div class="box-content">
+            <div class="box-product">
+                {include file="list-slider.html" products=$bestsellers inline}
+            </div>
+            <div class="clear"></div>
         </div>
-        <div class="clear"></div>
+    </div>
+{/if}
+
+<div class="tabs" itemscope itemtype="http://schema.org/Store">
+    <div class="tab-heading" itemprop="name">{sprintf('[`%s online store`]', $wa->shop->settings('name'))}</div>
+    <div class="tab-content">
+
+        {if $wa->shop->settings('phone')}
+            <p class="align-center large">
+                [`Contact us`]: <strong itemprop="telephone">{$wa->shop->settings('phone')}</strong>
+            </p>
+        {/if}
+        <p class="align-center gray">[`Edit this information in the <strong>home.html</strong> template file using built-in design editor in the store backend.`]</p>
+        <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+            <meta itemprop="streetAddress" content="">
+            <meta itemprop="addressLocality" content="">
+            <meta itemprop="addressRegion" content="">
+            <meta itemprop="postalCode" content="">
+            <meta itemprop="addressCountry" content="{$wa->shop->settings('country')|upper}">
+        </div>
     </div>
 </div>
-{/if}

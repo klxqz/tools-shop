@@ -19,17 +19,22 @@
                             {/if}
                             {$wa->shop->productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'default' => "`$wa_theme_url`img/dummy200.png"])}
 
-                            {if $p.rating > 0}
-                                <div class="rating nowrap">{$wa->shop->ratingHtml($p.rating)}</div>
-                            {/if}
+
                         </a>
                     </div>
                     <div class="left">
+
                         <h5 itemprop="name">
                             <div class="name">
                                 <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{$p.name}{/if}">{$p.name}</a>
+                                {if $p.rating > 0}
+                                    <div>
+                                        <div class="rating nowrap">{$wa->shop->ratingHtml($p.rating)}</div>
+                                    </div>
+                                {/if}
                             </div>
                         </h5>
+
                         {if $p.summary}<div class="description" itemprop="description">{$p.summary}</div>{/if}
 
                         <div itemprop="offers" class="offers" itemscope itemtype="http://schema.org/Offer">
@@ -56,7 +61,19 @@
                                 <link itemprop="availability" href="http://schema.org/OutOfStock" />
                             {/if}
                         </div>
+                        <div class="compare">
+                            <a data-id="{$p.id}" class="add_to_compare{if in_array($p.id, $compare)} checked{/if}" title="[`Add to Compare`]">
+                                <i class="fa fa-bar-chart-o"></i><span>[`Compare`]</span>
+                            </a>
+                        </div>
+                        <div class="wishlist">
+                            <a data-id="{$p.id}" class="add_to_wishlist{if in_array($p.id, $wishlist)} checked{/if}" title="[`Add to Wish List`]">
+                                <i class="fa fa-star"></i><span>[`Wish List`]</span>
+                            </a>
+                        </div>
+
                     </div>
+
             </li>
         {/foreach}
     </ul>
@@ -64,7 +81,7 @@
 
 
 {if isset($pages_count) && $pages_count > 1}
-    <div class="pagination lazyloading-paging">
+    <div class="pagination{if !empty($theme_settings.use_lazyloading)} lazyloading-paging{/if}">
         {wa_pagination total=$pages_count attrs=['class' => "links"]}
     </div>
 {/if}

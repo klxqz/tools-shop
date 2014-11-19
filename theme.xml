@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE theme PUBLIC "wa-app-theme" "http://www.webasyst.com/wa-content/xml/wa-app-theme.dtd">
-<theme id="tools" system="0" vendor="985310" author="wa-plugins.ru" app="shop" parent_theme_id="site:tools" version="1.0.1">
+<theme id="tools" system="0" vendor="985310" author="wa-plugins.ru" app="shop" parent_theme_id="site:tools" version="2.0.0">
     <name locale="en_US">Tools</name>
     <name locale="ru_RU">Tools</name>
     <files>
@@ -34,10 +34,6 @@
         <file path="list-slider.html" custom="0">
             <description locale="en_US">Product list thumbnail view for slider</description>
             <description locale="ru_RU">Список товаров эскизами для слайдера</description>
-        </file>
-        <file path="menu-gadget.html">
-            <description locale="en_US">menu-gadget block</description>
-            <description locale="ru_RU">Блок "menu-gadget"</description>
         </file>
         <file path="product.html" custom="0">
             <description locale="en_US">Dedicated product page</description>
@@ -175,36 +171,33 @@
             <description locale="en_US">bxslider plugin styles</description>
             <description locale="ru_RU">Стили плагина bxslider</description>
         </file>
-        <file path="jquery.fancybox-1.3.4.css" custom="0">
-            <description locale="en_US">fancybox plugin styles</description>
-            <description locale="ru_RU">Стили плагина fancybox</description>
-        </file>
     </files>
     <settings>
+        <setting var="setting_shop_title" control_type="text">
+            <value></value>
+            <name locale="en_US">
+                <![CDATA[
+                <hr /><br/><br/>
+                <p class="p-title">Shop settings.</p>	
+                ]]>
+            </name>
+            <name locale="ru_RU">
+                <![CDATA[
+                <hr /><br/><br/>
+                <p class="p-title">Настройки магазина.</p>	
+                ]]>
+            </name>
+        </setting>
         <setting var="ajax_filters" control_type="checkbox">
             <value>1</value>
             <name locale="en_US">AJAX-enabled product by-feature filtering</name>
             <name locale="ru_RU">AJAX-фильтры товаров по характеристикам</name>
         </setting>
-        
-        <setting var="use_logocategory_plugin" control_type="checkbox">
+        <setting var="filter_slider" control_type="checkbox">
             <value>1</value>
-            <name locale="en_US">use "logo category" plugin</name>
-            <name locale="ru_RU">
-                Использовать плагин "логотип категории" для вывода изображений.
-                <![CDATA[
-                <a href="http://www.webasyst.ru/store/plugin/shop/logocategory/">Купить и установить плагин "Логотип категории"</a>	
-                ]]>
-            </name>
+            <name locale="en_US">AJAX-enabled product by-feature filtering</name>
+            <name locale="ru_RU">Слайдер для цены в фильтре</name>
         </setting>
-        
-        <setting var="products_per_page" control_type="text">
-            <value>12,24,30,50,100</value>
-            <name locale="en_US">Number of products per page</name>
-            <name locale="ru_RU">Количество товаров на странице</name>
-        </setting>
-        
-        
         
         <setting var="setting_slider_title" control_type="text">
             <value></value>
@@ -302,6 +295,117 @@
         </setting>
         
         
+        <setting var="category_settings_title" control_type="text">
+            <value></value>
+            <name locale="en_US">
+                <![CDATA[
+                <hr /><br/><br/>
+                <p class="p-title">Settings category page.</p>	
+                ]]>
+            </name>
+            <name locale="ru_RU">
+                <![CDATA[
+                <hr /><br/><br/>
+                <p class="p-title">Настройки страницы категории.</p>	
+                ]]>
+            </name>
+        </setting>
+        
+        <setting var="use_logocategory_plugin" control_type="checkbox">
+            <value>0</value>
+            <name locale="en_US">use "logo category" plugin</name>
+            <name locale="ru_RU">
+                Использовать плагин "логотип категории" для вывода изображений.
+                <![CDATA[
+                <a href="http://www.webasyst.ru/store/plugin/shop/logocategory/">Купить и установить плагин "Логотип категории"</a>	
+                ]]>
+            </name>
+        </setting>
+        
+        <setting var="products_per_page" control_type="text">
+            <value>6,12,24,30,50,100</value>
+            <name locale="en_US">Number of products per page</name>
+            <name locale="ru_RU">Количество товаров на странице</name>
+        </setting>
+        
+        <setting var="use_lazyloading" control_type="checkbox">
+            <value>0</value>
+            <name locale="en_US">use lazyloading-paging</name>
+            <name locale="ru_RU">Использовать ajax-подгрузку товаров(при прокрутке страницы вниз товары со следующей страницы автоматически подгружаются, при отключение работает стандартная навигация по страницам категории)</name>
+        </setting>
+        
+        
+        <setting var="category_settings_sidebar_title" control_type="text">
+            <value></value>
+            <name locale="en_US">
+                <![CDATA[
+                <hr /><br/><br/>
+                <p class="p-title">Sidebar.</p>	
+                ]]>
+            </name>
+            <name locale="ru_RU">
+                <![CDATA[
+                <hr /><br/><br/>
+                <p class="p-title">Боковое меню.</p>	
+                ]]>
+            </name>
+        </setting>
+        <setting var="category_photos" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">Photos.</name>
+            <name locale="ru_RU">Фото.</name>
+        </setting>
+        <setting var="category_blog" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">Blog. News.</name>
+            <name locale="ru_RU">Блог. Новости.</name>
+        </setting>
+        <setting var="category_vk_widget" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">VK widget.</name>
+            <name locale="ru_RU">Виджет ВКонтакте.</name>
+        </setting>
+        <setting var="category_facebook_widget" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">Facebook widget.</name>
+            <name locale="ru_RU">Виджет Facebook</name>
+        </setting>
+        <setting var="category_viewed_products" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">viewed products</name>
+            <name locale="ru_RU">Просмотренные товары</name>
+        </setting>
+        <setting var="category_viewed_products_count" control_type="text">
+            <value>3</value>
+            <name locale="en_US">Viewed products. Count</name>
+            <name locale="ru_RU">Просмотренные товары. Максимальное количество в списке.</name>
+        </setting>
+        
+        <setting var="category_wishlist_products" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">wishlist products</name>
+            <name locale="ru_RU">Избранные товары</name>
+        </setting>
+        
+        <setting var="category_wishlist_products_count" control_type="text">
+            <value>3</value>
+            <name locale="en_US">wishlist products. Count</name>
+            <name locale="ru_RU">Избранные товары. Максимальное количество в списке.</name>
+        </setting>
+        
+        <setting var="category_tags" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">Tags</name>
+            <name locale="ru_RU">Теги</name>
+        </setting>
+        <setting var="tagcanvas" control_type="checkbox">
+            <value>1</value>
+            <name locale="en_US">3D tags</name>
+            <name locale="ru_RU">3D облако тегов</name>
+        </setting>
+        
+        
+        
         
         
     </settings>
@@ -310,6 +414,35 @@
             <msgid>Brands</msgid>
             <msgstr locale="ru_RU">Бренды</msgstr>
         </locale>
+        <locale>
+            <msgid>Compare</msgid>
+            <msgstr locale="ru_RU">Сравнить</msgstr>
+        </locale>
+        <locale>
+            <msgid>Wish List</msgid>
+            <msgstr locale="ru_RU">Избранное</msgstr>
+        </locale>
+        <locale>
+            <msgid>Add to Compare</msgid>
+            <msgstr locale="ru_RU">Добавить к сравнению</msgstr>
+        </locale>
+        <locale>
+            <msgid>Add to Wish List</msgid>
+            <msgstr locale="ru_RU">Добавить в избранное</msgstr>
+        </locale>
+        <locale>
+            <msgid>Remove from Wish List</msgid>
+            <msgstr locale="ru_RU">Удалить из избранного</msgstr>
+        </locale>
+        <locale>
+            <msgid>Viewed products</msgid>
+            <msgstr locale="ru_RU">Просмотренные товары</msgstr>
+        </locale>
+        <locale>
+            <msgid>All Products</msgid>
+            <msgstr locale="ru_RU">Все товары</msgstr>
+        </locale>
+        
     </locales>
     
 

@@ -1,139 +1,192 @@
 {if isset($category)}{$selected_category=$category.id}{else}{$selected_category=null}{/if}
 {$categories = $wa->shop->categories(0, null, true)}
 {if $categories}
-<div class="box category">
-    <div class="box-heading">[`Catalog`]</div>
-    <div class="box-content">
-        <div class="box-category">
-            {wa_print_tree tree=$categories selected=$selected_category unfolded=true collapsible_class='parent' class=" category-tree" elem ='<a href=":url" title=":name">:name</a>'}
+    <div class="box category">
+        <div class="box-heading">[`Catalog`]</div>
+        <div class="box-content">
+            <div class="box-category">
+                {wa_print_tree tree=$categories selected=$selected_category unfolded=true collapsible_class='parent' class=" category-tree" elem ='<a href=":url" title=":name">:name</a>'}
+            </div>
         </div>
     </div>
-</div>
-<div class="clear"></div>
+    <div class="clear"></div>
 {/if}
 
 
 {if $wa->shop->pages()}
-<div class="box category">
-    <div class="box-heading">[`Information`]</div>
-    <div class="box-content">
-        <div class="box-category">
-            <!-- page tree -->
-            {wa_print_tree tree=$wa->shop->pages() attrs = 'id="page-list"' elem ='<a href=":url" title=":title">:name</a>' collapsible_class='parent' selected=$wa->param('page_id')}
+    <div class="box category">
+        <div class="box-heading">[`Information`]</div>
+        <div class="box-content">
+            <div class="box-category">
+                <!-- page tree -->
+                {wa_print_tree tree=$wa->shop->pages() attrs = 'id="page-list"' elem ='<a href=":url" title=":title">:name</a>' collapsible_class='parent' selected=$wa->param('page_id')}
+            </div>
         </div>
     </div>
-</div>
 {/if}
 
 <!-- filtering by product features -->
 {if !empty($filters)}
-<div class="box man">
-    <div class="box-heading"><span>Фильтр товаров</span></div>
-    <div class="box-content">
+    <div class="box man">
+        <div class="box-heading"><span>Фильтр товаров</span></div>
+        <div class="box-content">
+            <div class="filters{if !empty($theme_settings.ajax_filters)} ajax{/if}">
+                <form method="get" action="{$wa->currentUrl()}">
+                    <ul class="box-filter ">
+                        {foreach $filters as $fid => $filter}
+                            {if $fid == 'price'}
+                                {$c = $wa->shop->currency(true)}
+                                <li>
+                                    <span>[`Price`]</span>
+                                    <ul>
+                                        <li>
+                                            [`from`]
+                                            <input type="text" name="price_min" {if $wa->get('price_min')}value="{(int)$wa->get('price_min')}"{/if} placeholder="{floor($filter.min)}"> {$c.sign}
+                                        </li>
+                                        <li>
+                                            [`to`]
+                                            <input type="text" name="price_max" {if $wa->get('price_max')}value="{(int)$wa->get('price_max')}"{/if} placeholder="{ceil($filter.max)}"> {$c.sign}
+                                        </li>
+                                    </ul>
+                                </li>
+                                {if !empty($theme_settings.filter_slider)}
+                                    <li>
+                                        <div id="filter-slider"></div>
+                                        <script type="text/javascript">
+                                            var filter_slider_min_value = {floor($filter.min)};
+                                            var filter_slider_max_value = {ceil($filter.max)};
+                                            var filter_slider_min_price = {if $wa->get('price_min')}{(int)$wa->get('price_min')}{else}{floor($filter.min)}{/if};
+                                            var filter_slider_max_price = {if $wa->get('price_max')}{(int)$wa->get('price_max')}{else}{ceil($filter.max)}{/if};
+                                        </script>
+                                    </li>
+                                {/if}
+                            {else}
+                                <li>
+                                    <span>{$filter.name|escape}</span>
+                                    {if $filter.type == 'boolean'}
+                                        <ul>
+                                            <li>
+                                                <input type="radio" name="{$filter.code}"{if $wa->get($filter.code)} checked{/if} value="1"> 
+                                                <label>
+                                                    [`Yes`]
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" name="{$filter.code}"{if $wa->get($filter.code) === '0'} checked{/if} value="0"> 
+                                                <label>
+                                                    [`No`]
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" name="{$filter.code}"{if $wa->get($filter.code, '') === ''} checked{/if} value=""> 
+                                                <label>
+                                                    [`Any`]
+                                                </label>
+                                            </li>
 
+                                        </ul>
+                                    {elseif isset($filter.min)}
+                                        {$_v = $wa->get($filter.code)}
+                                        <ul>
+                                            <li>[`from`] <input type="text" name="{$filter.code}[min]" placeholder="{$filter.min}" {if !empty($_v.min)}value="{$_v.min}"{/if}></li>
+                                            <li>
+                                                [`to`] <input type="text" name="{$filter.code}[max]" placeholder="{$filter.max}" {if !empty($_v.max)}value="{$_v.max}"{/if}>
+                                                {if !empty($filter.unit)}
+                                                    {$filter.unit.title}
+                                                    {if $filter.unit.value != $filter.base_unit.value}<input type="hidden" name="{$filter.code}[unit]" value="{$filter.unit.value}">{/if}
+                                                {/if}
+                                            </li>
+                                        </ul>
+                                    {else}
+                                        <ul>
+                                            {foreach $filter.values as $v_id => $v}
+                                                <li>
+                                                    <input type="checkbox" name="{$filter.code}[]" {if in_array($v_id, (array)$wa->get($filter.code, array()))}checked{/if} value="{$v_id}"> 
+                                                    <label>
+                                                        {$v}
+                                                    </label>
+                                                </li>
+                                            {/foreach}
+                                        </ul>
+                                    {/if}
+                                </li>
+                            {/if}
+                        {/foreach}
+                    </ul>
+                </form>
+            </div>
 
-        <div class="filters{if !empty($theme_settings.ajax_filters)} ajax{/if}">
-            <form method="get" action="{$wa->currentUrl()}">
-                {foreach $filters as $fid => $filter}
-                <p>
-                    {if $fid == 'price'}
-                    {$c = $wa->shop->currency(true)}
-                    <b>[`Price`]</b><br>
-                    [`from`] <input type="text" name="price_min" {if $wa->get('price_min')}value="{(int)$wa->get('price_min')}"{/if} placeholder="0">
-                    [`to`] <input type="text" name="price_max" {if $wa->get('price_max')}value="{(int)$wa->get('price_max')}"{/if} placeholder="&infin;"> {$c.sign}
-                    {else}
-                    <b>{$filter.name|escape}</b><br>
-                    {if $filter.type == 'boolean'}
-                    <label><input type="radio" name="{$filter.code}"{if $wa->get($filter.code)} checked{/if} value="1"> [`Yes`]</label><br>
-                    <label><input type="radio" name="{$filter.code}"{if $wa->get($filter.code) === '0'} checked{/if} value="0"> [`No`]</label><br>
-                    <label><input type="radio" name="{$filter.code}"{if $wa->get($filter.code, '') === ''} checked{/if} value=""> [`Any`]</label><br>
-                    {else}
-                    {foreach $filter.values as $v_id => $v}
-                    <label>
-                        <input type="checkbox" name="{$filter.code}[]" {if in_array($v_id, (array)$wa->get($filter.code, array()))}checked{/if} value="{$v_id}"> {$v}
-                    </label><br>
-                    {/foreach}
-                    {/if}
-                    {/if}
-                </p>
-                {/foreach}
-                {if $wa->get('sort')}<input type="hidden" name="sort" value="{$wa->get('sort')|escape}">{/if}
-                {if $wa->get('order')}<input type="hidden" name="order" value="{$wa->get('order')|escape}">{/if}
-                <input class="button" type="submit" value="[`Filter products`]">
-            </form>
+            <div class="clear"></div>
         </div>
-
-        <div class="clear"></div>
     </div>
-</div>
 {/if} 
 
 
 {if isset($frontend_nav['brands-plugin'])}
-<div class="box man">
-    <div class="box-heading"><span>[`Brands`]</span></div>
-    <div class="box-content">
-        {$frontend_nav['brands-plugin']}
-        <div class="clear"></div>
-    </div>
-</div>
-{/if}
-
-
-{if $wa->blog && $wa->blog->posts()}
-<div class="box man">
-    <div class="box-heading"><span>[`News`]</span></div>
-    <div class="box-content">
-        {foreach $wa->blog->posts() as $post}
-        <div class="short-post">
-            <h3>
-                <a href="{$post.link}">{$post.title}</a>
-                {* @event prepare_posts_frontend.%plugin_id%.post_title *}
-                {if !empty($post.plugins.post_title)}
-                {foreach $post.plugins.post_title as $plugin => $output}{$output}{/foreach}
-                {/if}
-            </h3>
-            <div class="credentials">
-                {if $post.user.posts_link}
-                <a href="{$post.user.posts_link}" class="username">{$post.user.name}</a>
-                {else}
-                <span class="username">{$post.user.name}</span>
-                {/if}
-                {$post.datetime|wa_datetime:"humandate"}
-            </div>
-            <p>
-                {$post.text|strip_tags|truncate:400}
-            </p>
+    <div class="box man">
+        <div class="box-heading"><span>[`Brands`]</span></div>
+        <div class="box-content">
+            {$frontend_nav['brands-plugin']}
+            <div class="clear"></div>
         </div>
-        {if $post@iteration == 3}{break}{/if}
-        {/foreach}
-        <div class="clear"></div>
     </div>
+{/if}
+
+
+{if $theme_settings.category_blog && $wa->blog && $wa->blog->posts()}
+    <div class="box man">
+        <div class="box-heading"><span>[`News`]</span></div>
+        <div class="box-content">
+            {foreach $wa->blog->posts() as $post}
+                <div class="short-post">
+                    <h3>
+                        <a href="{$post.link}">{$post.title}</a>
+                        {* @event prepare_posts_frontend.%plugin_id%.post_title *}
+                        {if !empty($post.plugins.post_title)}
+                        {foreach $post.plugins.post_title as $plugin => $output}{$output}{/foreach}
+                    {/if}
+                </h3>
+                <div class="credentials">
+                    {if $post.user.posts_link}
+                        <a href="{$post.user.posts_link}" class="username">{$post.user.name}</a>
+                    {else}
+                        <span class="username">{$post.user.name}</span>
+                    {/if}
+                    {$post.datetime|wa_datetime:"humandate"}
+                </div>
+                <p>
+                    {$post.text|strip_tags|truncate:400}
+                </p>
+            </div>
+        {if $post@iteration == 3}{break}{/if}
+    {/foreach}
+    <div class="clear"></div>
+</div>
 </div>
 {/if}
 
-{if $wa->photos && $wa->photos->photos()}
-<div class="box man" id="last_photos">
-    <div class="box-heading"><span>[`Photo`]</span></div>
-    <div class="box-content">
-        <ul class="view-thumbs">
-            {foreach from=$wa->photos->photos() item=photo}
-            <li{if $photo.stack_count > 0} class="stacked"{/if}>
-                <div class="image">
-                    {if empty($photo.frontend_link)}
-                    {$wa->photos->getImgHtml($photo, "200x0", ["class"=>"shadowed"])}
-                    {else}
-                    <a href="{$photo.frontend_link|default:'#'}">
-                        {$wa->photos->getImgHtml($photo, "200x0", ["class"=>"shadowed"])}
-                    </a>
-                    {/if}
-                </div>
-                <h5>{$photo.name}</h5>
-                {if $photo.description}
-                <p>{$photo.description}</p>
-                {/if}
-            </li>
-            {if $photo@iteration == 3}{break}{/if}
+{if $theme_settings.category_photos && $wa->photos && $wa->photos->photos()}
+    <div class="box man" id="last_photos">
+        <div class="box-heading"><span>[`Photos`]</span></div>
+        <div class="box-content">
+            <ul class="view-thumbs">
+                {foreach from=$wa->photos->photos() item=photo}
+                    <li{if $photo.stack_count > 0} class="stacked"{/if}>
+                        <div class="image">
+                            {if empty($photo.frontend_link)}
+                                {$wa->photos->getImgHtml($photo, "200x0", ["class"=>"shadowed"])}
+                            {else}
+                                <a href="{$photo.frontend_link|default:'#'}">
+                                    {$wa->photos->getImgHtml($photo, "200x0", ["class"=>"shadowed"])}
+                                </a>
+                            {/if}
+                        </div>
+                        <h5>{$photo.name}</h5>
+                        {if $photo.description}
+                            <p>{$photo.description}</p>
+                        {/if}
+                    </li>
+                {if $photo@iteration == 3}{break}{/if}
             {/foreach}
         </ul>
         <div class="clear"></div>
@@ -143,25 +196,122 @@
 
 
 <!-- tag cloud -->
-{if $cloud = $wa->shop->tags()}
-<div class="box man">
-    <div class="box-heading"><span>[`Tags`]</span></div>
-    <div class="box-content">
-        <div class="tags">
-            {foreach $cloud as $tag}
-            <a href="{$wa_app_url}tag/{$tag.uri_name}/" style="font-size: {$tag.size}%; opacity: {$tag.opacity}">{$tag.name|escape}</a>
-            {/foreach}
+{if $theme_settings.vk_widget && $theme_settings.category_vk_widget}
+    <div class="box man">
+        <div class="box-heading"><span>[`We VKontakte`]</span></div>
+        <div class="box-content">
+            {include file="widget.vk.html"}
+            <div class="clear"></div>
         </div>
-        <div class="clear"></div>
     </div>
-</div>
+{/if}
+
+
+{if $theme_settings.facebook_widget && $theme_settings.category_facebook_widget}
+    <div class="box man">
+        <div class="box-heading"><span>[`Follow us on facebook`]</span></div>
+        <div class="box-content">
+            {include file="widget.facebook.html"}
+            <div class="clear"></div>
+        </div>
+    </div>
+{/if}
+
+{$viewed_products = waRequest::cookie('viewed_products')}
+{if $theme_settings.category_viewed_products && !empty($viewed_products)}
+    {$viewed_products = explode(',', $viewed_products)}
+    <div class="box man">
+        <div class="box-heading"><span>[`Viewed products`]</span></div>
+        <div class="box-content">
+            {foreach $viewed_products as $viewed_product_id}
+                {$v_p = $wa->shop->product($viewed_product_id)}
+                <div class="sidebar_product clearfix">
+                    <div class="image fleft">			
+                        <a href="{$wa->shop->productUrl($v_p)}">
+                            {$wa->shop->productImgHtml($v_p, '90', [ 'itemprop' => 'image', 'alt' => $v_p.name|escape|cat:' ':strip_tags($v_p.summary)|escape ])}
+                        </a>
+                    </div>
+                    <div class="extra-wrap">
+                        <h5>
+                            <div class="name">
+                                <a href="{$wa->shop->productUrl($v_p)}">{$v_p.name}</a>
+                            </div>
+                        </h5>
+                        <div class="price">
+                            {shop_currency_html($v_p.price)}                            
+                        </div>
+                    </div>
+                </div>
+                {if $viewed_product_id@iteration >= $theme_settings.category_viewed_products_count}
+                    {break}
+                {/if}
+            {/foreach}
+            <a href="{$wa->getUrl('/frontend/search')}?list=viewed_products">[`All Products`]</a>
+            <div class="clear"></div>
+        </div>
+    </div>
+{/if}
+
+{$wishlist_products = waRequest::cookie('shop_wishlist')}
+{if $theme_settings.category_wishlist_products && !empty($wishlist_products)}
+    {$wishlist_products = explode(',', $wishlist_products)}
+    <div class="box man">
+        <div class="box-heading"><span>[`Wishlist products`]</span></div>
+        <div class="box-content">
+            {foreach $wishlist_products as $wishlist_product_id}
+                {$wl_p = $wa->shop->product($wishlist_product_id)}
+                <div class="sidebar_product clearfix">
+                    <div class="image fleft">			
+                        <a href="{$wa->shop->productUrl($wl_p)}">
+                            {$wa->shop->productImgHtml($wl_p, '90', [ 'itemprop' => 'image', 'alt' => $wl_p.name|escape|cat:' ':strip_tags($wl_p.summary)|escape ])}
+                        </a>
+                    </div>
+                    <div class="extra-wrap">
+                        <h5>
+                            <div class="name">
+                                <a href="{$wa->shop->productUrl($wl_p)}">{$wl_p.name}</a>
+                            </div>
+                        </h5>
+                        <div class="price">
+                            {shop_currency_html($wl_p.price)}                            
+                        </div>
+                    </div>
+                </div>
+                {if $wishlist_product_id@iteration >= $theme_settings.category_wishlist_products_count}
+                    {break}
+                {/if}
+            {/foreach}
+            <a href="{$wa->getUrl('/frontend/search')}?list=wishlist">[`All Products`]</a>
+            <div class="clear"></div>
+        </div>
+    </div>
+{/if}
+
+<!-- tag cloud -->
+{if $theme_settings.category_tags && $wa->shop->tags() }
+    <div class="box man">
+        <div class="box-heading"><span>[`Tags`]</span></div>
+        <div class="box-content">
+            {if !empty($theme_settings.tagcanvas)}
+                <div id="tag-cloud-canvas">
+                    <canvas id="canvas"></canvas>
+                </div>
+            {/if}
+            <div class="tags" id="tag-cloud">
+                {foreach $wa->shop->tags() as $tag}
+                    <a href="{$wa_app_url}tag/{$tag.uri_name}/" style="font-size: {$tag.size}%; opacity: {$tag.opacity}">{$tag.name|escape}</a>
+                {/foreach}
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
 {/if}
 
 <!-- plugin hook: 'frontend_nav' -->
 {* @event frontend_nav.%plugin_id% *}
 {foreach $frontend_nav as $plugin => $_}
-{if $plugin != 'brands-plugin'}
-{$_}
-{/if}
+    {if $plugin != 'brands-plugin'}
+        {$_}
+    {/if}
 {/foreach}
 

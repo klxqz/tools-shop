@@ -22,6 +22,9 @@
     <option value="?{http_build_query($data)}" {if $active_sort == $sort}selected="selected"{/if}>{$name} {if $active_sort == $sort}{if $data['order'] == 'asc'}&uarr;{else}&darr;{/if}{/if}</option>
 {/function}
 
+{$compare = waRequest::cookie('shop_compare', array(), waRequest::TYPE_ARRAY_INT)}
+{$wishlist = waRequest::cookie('shop_wishlist', array(), waRequest::TYPE_ARRAY_INT)}
+
 <h1 class="style-1">{$category.name|escape}</h1>    
 
 <!-- plugin hook: 'frontend_category' -->
@@ -129,43 +132,12 @@
         {include file='list-thumbs.html' sorting=!empty($category.params.enable_sorting)}
     {/if}
 </div>
-<script type="text/javascript"><!--
-    $(document).ready(function() {
-        function display_view() {
-            if (view == 'list') {
-                $('.product-grid ').attr('class', 'product-list');
-                $('.product-list ul').removeClass('row');
-                $('.product-list ul li').removeClass('col-sm-4');
-                $('.product-list ul li').find('.image').addClass('col-sm-3');
-                $('.product-list ul li').find('.left').addClass('col-sm-9');
-                $('.product-list ul li').find('>div').attr('class', 'row');
-                $('#list_a').attr('id', 'list_b');
-                $('#grid_b').attr('id', 'grid_a');
-                $.totalStorage('display', 'list');
 
-            } else {
-                $('.product-list').attr('class', 'product-grid');
-                $('.product-grid ul').addClass('row');
-                $('.product-grid ul li').addClass('col-sm-4');
-                $('.product-grid ul li').find('.image').removeClass('col-sm-3');
-                $('.product-grid ul li').find('.left').removeClass('col-sm-9');
-                $('.product-grid ul li').find('>div').attr('class', 'padding');
-                $('#list_b').attr('id', 'list_a');
-                $('#grid_a').attr('id', 'grid_b');
-                $.totalStorage('display', 'grid');
-            }
-        }
 
-        $('.display .display_view').click(function() {
-            view = $(this).data('view');
-            display_view(view);
-        });
-        view = $.totalStorage('display');
-
-        if (view) {
-            display_view(view);
-        } else {
-            display_view('grid');
-        }
-    });
-//--></script> 
+<div class="compare-form">
+    <a href="{$wa->getUrl('/frontend/compare/', ['id' => implode(',', $compare) ])}" class="bt_compare_bottom button" {if count($compare)<2}disabled="disabled"{/if}>
+        <span>
+           <i class="fa fa-bar-chart-o"></i> [`Compare`] (<strong class="total-compare-val">{count($compare)}</strong>)
+        </span>
+    </a>
+</div>

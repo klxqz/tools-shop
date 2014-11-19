@@ -37,16 +37,9 @@
 </script>
 
 {$td_width = round((100-25)/count($products))}
-<table id="compare-table" class="compare">
+<table id="compare-table" class="compare compare-info table table-bordered">
     <tr>
         <th>    
-            {*
-            uncomment for all/different only toggle
-            <ul class="menu-h">
-                <li class="selected"><a id="compare-all" href="#" class="inline-link"><b><i>[`All features`]</i></b></a></li>
-                <li><a id="compare-diff" href="#" class="inline-link"><b><i>[`Different`]</i></b></a></li>
-            </ul>        
-            *}
         </th>
         {foreach $products as $p}
             <td width="{$td_width}%">
@@ -56,7 +49,7 @@
                 </a>
                 {if count($products) > 2}
                     <br><br>
-                    <a data-product="{$p.id}" class="compare-remove" href="{$p.delete_url}" title="[`Remove from comparison list`]"><i class="icon16 remove"></i></a>
+                    <a data-product="{$p.id}" class="compare-remove" href="{$p.delete_url}" title="[`Remove from comparison list`]"><i class="fa fa-trash"></i></a>
                 {/if}
             </td>
         {/foreach}

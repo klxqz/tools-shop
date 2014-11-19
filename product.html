@@ -2,6 +2,7 @@
 <script type="text/javascript" src="{$wa_theme_url}product_scripts.js?v{$wa_theme_version}"></script>
 
 <div class="product-info" itemscope itemtype="http://schema.org/Product">
+    <input type="hidden" id="is_product_page" value="{$product.id}" />
     <div class="row">
 
         <div class="col-sm-4">
@@ -81,8 +82,8 @@
                         {/if}
                         &nbsp;&nbsp;
                         <div class="btn-rew">
-                            <a onclick="document.getElementById('tab-review').scrollIntoView();">1 reviews</a>
-                            <a onclick="document.getElementById('tab-review').scrollIntoView();"><i class="fa fa-pencil"></i>Write a review</a>
+                            <a onclick="document.getElementById('tab-review').scrollIntoView();">[`Reviews`]</a>
+                            <a href="{$wa->shop->productUrl($product, 'reviews')}"><i class="fa fa-pencil"></i>[`Write a review`]</a>
                             <div class="clear"></div>
                         </div>
                     </div>
@@ -115,43 +116,6 @@
                 </div>
             </div>
 
-            {*
-            <div class="description">
-                <!-- product page navigation -->
-
-                <div class="cart">
-                    {include file="product.cart.html" inline}
-                    <!-- plugin hook: 'frontend_product.cart' -->
-
-                    {foreach $frontend_product as $_}
-                    {$_.cart}
-                    {/foreach}
-                </div>
-
-                <div class="clear"></div>
-                <div class="review">
-                    <div>
-                        {if !empty($product.rating) && $product.rating > 0}
-                        <div class="rating nowrap" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" title="{sprintf('[`Average user rating: %s / 5`]', $product.rating)}">
-                            {$wa->shop->ratingHtml($product.rating, 16)}
-                            <span itemprop="ratingValue" style="display: none;">{$product.rating}</span>
-                            <span itemprop="reviewCount" style="display: none;">{$reviews_total_count}</span>
-                        </div>
-                        {/if}
-                        <div class="btn-rew">
-                            <a onclick="document.getElementById('tab-review').scrollIntoView();">[`Reviews`]</a>
-                            <a href="{$wa->shop->productUrl($product, 'reviews')}"><i class="fa fa-pencil"></i>[`Write a review`]</a>
-                            <div class="clear"></div>
-                        </div>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="clear"></div>
-                <div class="share">
-                    <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
-                    <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"></div> 
-                </div>
-            </div>*}
         </div>
     </div>
 

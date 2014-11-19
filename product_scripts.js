@@ -1,7 +1,5 @@
 
 $(function() {
-
-
     var g_slider = $('#gallery').bxSlider({
         pager: false,
         controls: true,

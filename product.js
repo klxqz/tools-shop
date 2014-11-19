@@ -105,6 +105,7 @@ function Product(form, options) {
                         item.find('.quantity span').text(quantity + q);
                         cart.find('.shopping_cart_total').html(response.data.total);
                         cart.find('#cart-total2').html(response.data.count);
+                        $('#panel .cart .count').html(response.data.count);
                         cart.find('.shopping_cart_discount').html(response.data.discount);
                     } else {
                         var info = cart_div.find('.ajax_product_info');
@@ -119,6 +120,7 @@ function Product(form, options) {
                         $('#cart_block_list_item_tmpl').tmpl(tpl_data).appendTo('.mini-cart-info table tbody');
                         cart.find('.shopping_cart_total').html(response.data.total);
                         cart.find('#cart-total2').html(response.data.count);
+                        $('#panel .cart .count').html(response.data.count);
                         cart.find('.shopping_cart_discount').html(response.data.discount);
                     }
                     $('#notification').html('<div class="success" style="display: none;"><i class="fa fa-thumbs-up"></i>Товар успешно добавлен в корзину!<span class="close"><i class="fa fa-times-circle"></i></span></div>');
@@ -259,6 +261,25 @@ Product.prototype.updatePrice = function(price, compare_price) {
 }
 
 $(function() {
+    $('a.cart-minus').click(function() {
+        var count = parseInt($('input[name=quantity]').val());
+        if (count && count - 1 > 0) {
+            $('input[name=quantity]').val(count - 1);
+        } else {
+            $('input[name=quantity]').val(1);
+        }
+        return false;
+    });
+    $('a.cart-plus').click(function() {
+        var count = parseInt($('input[name=quantity]').val());
+        if (count) {
+            $('input[name=quantity]').val(count + 1);
+        } else {
+            $('input[name=quantity]').val(1);
+        }
+
+        return false;
+    });
 
     // compare block
     $("a.compare-add").click(function() {
@@ -272,6 +293,7 @@ $(function() {
             var url = $("#compare-link").attr('href').replace(/compare\/.*$/, 'compare/' + compare + '/');
             $("#compare-link").attr('href', url).show().find('span.count').html(compare.split(',').length);
         }
+        $("#panel .compare .count").text(compare.split(',').length);
         $.cookie('shop_compare', compare, {expires: 30, path: '/'});
         $(this).hide();
         $("a.compare-remove").show();
@@ -291,11 +313,58 @@ $(function() {
         $("#compare-link").hide();
         if (compare) {
             $.cookie('shop_compare', compare.join(','), {expires: 30, path: '/'});
+            $("#panel .compare .count").text(compare.length);
         } else {
+            $("#panel .compare .count").text(0);
             $.cookie('shop_compare', null);
         }
         $(this).hide();
         $("a.compare-add").show();
         return false;
     });
+
+    $("a.wishlist-add").click(function() {
+        var wishlist = $.cookie('shop_wishlist');
+        if (wishlist) {
+            wishlist += ',' + $(this).data('product');
+        } else {
+            wishlist = '' + $(this).data('product');
+        }
+        $("#panel .wishlist .count").text(wishlist.split(',').length);
+        $.cookie('shop_wishlist', wishlist, {expires: 30, path: '/'});
+        $(this).hide();
+        $("a.wishlist-remove").show();
+        $("#wishlist-link").show();
+        return false;
+    });
+    $("a.wishlist-remove").click(function() {
+        var wishlist = $.cookie('shop_wishlist');
+        if (wishlist) {
+            wishlist = wishlist.split(',');
+        } else {
+            wishlist = [];
+        }
+        var i = $.inArray($(this).data('product') + '', wishlist);
+        if (i != -1) {
+            wishlist.splice(i, 1)
+        }
+        $("#wishlist-link").hide();
+        if (wishlist) {
+            $.cookie('shop_wishlist', wishlist.join(','), {expires: 30, path: '/'});
+            $("#panel .wishlist .count").text(wishlist.length);
+        } else {
+            $("#panel .wishlist .count").text(0);
+            $.cookie('shop_wishlist', null);
+        }
+        $(this).hide();
+        $("a.wishlist-add").show();
+        return false;
+    });
+
+
+
+    $("#button-cart").click(function() {
+        $(this).closest('form').submit();
+    });
+
 });

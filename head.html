@@ -15,6 +15,24 @@
 <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.core.js?v{$wa->version(true)}"></script>
 <script type="text/javascript" src="{$wa_active_theme_url}lazyloading.js?v{$wa_theme_version}"></script>
 <script type="text/javascript" src="{$wa_app_static_url}js/lazy.load.js?v{$wa->version()}"></script>
+{if !empty($filters) && !empty($theme_settings.filter_slider)}
+    <link href="{$wa_url}wa-content/css/jquery-ui/base/jquery.ui.theme.css?v{$wa_theme_version}" rel="stylesheet" type="text/css">
+    <link href="{$wa_url}wa-content/css/jquery-ui/base/jquery.ui.slider.css?v{$wa_theme_version}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.core.min.js?v{$wa_theme_version}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{$wa_theme_version}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{$wa_theme_version}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{$wa_theme_version}"></script>
+{/if}
+{if !empty($theme_settings.tagcanvas)}
+    <script type="text/javascript" src="{$wa_active_theme_url}js/jquery.tagcanvas.min.js"></script>
+{/if}
+
+{$compare = waRequest::cookie('shop_compare', array(), waRequest::TYPE_ARRAY_INT)}
+<script type="text/javascript">
+    var compare_url = '{$wa->getUrl('/frontend/compare/', ['id' => implode(',', $compare) ])}';
+    var tagcanvas = '{$theme_settings.tagcanvas}';
+    var filter_slider = {if !empty($filters) && !empty($theme_settings.filter_slider)}1{else}0{/if};
+</script>
 <script type="text/javascript" src="{$wa_active_theme_url}tools.shop.js?v{$wa_theme_version}"></script>
 <script type="text/javascript" src="{$wa_active_theme_url}jquery.total-storage.min.js"></script>
 <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-plugins/jquery.cookie.js"></script>
@@ -36,8 +54,8 @@
 <!-- jcarousel -->
 <script type="text/javascript" src="{$wa_active_theme_url}jquery.jcarousel.min.js" ></script>
 {if !empty($nofollow)}
-<!-- "nofollow" for pages not to be indexed, e.g. customer account -->
-<meta name="robots" content="noindex,nofollow" />
+    <!-- "nofollow" for pages not to be indexed, e.g. customer account -->
+    <meta name="robots" content="noindex,nofollow" />
 {/if}
 
 <!-- plugin hook: 'frontend_head' -->
