@@ -77,7 +77,7 @@
             {$active_sort = $wa->get('sort', 'create_datetime')}
         {/if}
 
-        <div class="sort"><b>Sort By:</b>
+        <div class="sort"><b>[`Sort by`]:</b>
             <select id="selectProductSort">
                 {if !empty($category) && !$category.sort_products}
                     <option value="{$wa->currentUrl(0, 1)}" {if !$active_sort} selected="selected"{/if} >[`New & Popular`]</option>
@@ -94,7 +94,7 @@
     {/if}
 
     {$products_pers = explode(',',$theme_settings.products_per_page)}
-    <div class="limit"><b>Show:</b>
+    <div class="limit"><b>[`Show by`]:</b>
         <select id="nb_item" name="nb_item">
             {if isset($smarty.cookies.products_per_page)}
                 {$products_per_page = $smarty.cookies.products_per_page}

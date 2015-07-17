@@ -210,7 +210,7 @@
     <div class="tab-heading">
         [`See also`]	
     </div>
-    <div class="tab-content">
+    <div class="tab-content box-product">
         {include file="list-slider.html" products=$upselling}
     </div>
 </div>
@@ -220,7 +220,7 @@
     <div class="tab-heading">
         {sprintf('[`Customers who bought %s also bought`]', $product.name|escape)}
     </div>
-    <div class="tab-content">
+    <div class="tab-content box-product">
         {include file="list-slider.html" products=$crossselling}
     </div>
 </div>

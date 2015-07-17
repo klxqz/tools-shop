@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE theme PUBLIC "wa-app-theme" "http://www.webasyst.com/wa-content/xml/wa-app-theme.dtd">
-<theme id="tools" system="0" vendor="985310" author="wa-plugins.ru" app="shop" parent_theme_id="site:tools" version="2.0.0">
+<theme id="tools" system="0" vendor="985310" author="wa-plugins.ru" app="shop" parent_theme_id="site:tools" version="2.1.0">
     <name locale="en_US">Tools</name>
     <name locale="ru_RU">Tools</name>
     <files>
@@ -404,7 +404,41 @@
             <name locale="ru_RU">3D облако тегов</name>
         </setting>
         
+        <setting var="product_settings_title" control_type="text">
+            <value></value>
+            <name locale="en_US">
+                <![CDATA[
+                <hr /><br/><br/>
+                <p class="p-title">Settings product page.</p>	
+                ]]>
+            </name>
+            <name locale="ru_RU">
+                <![CDATA[
+                <hr /><br/><br/>
+                <p class="p-title">Настройки страницы товара.</p>	
+                ]]>
+            </name>
+        </setting>
         
+        <setting var="selectable_features_control" control_type="radio">
+            <value>inline</value>
+            <name locale="ru_RU">Выбор характеристик</name>
+            <name locale="en_US">Selectable features</name>
+            <options>
+                <option value="inline">
+                    <name locale="ru_RU">Показывать все значения крупно в ряд</name>
+                    <name locale="en_US">Display all values inline</name>
+                    <description locale="ru_RU">Для товаров в режиме продажи «Выбор характеристик» значения характеристик будут показаны одной строкой друг за другом. Рекомендуется, если названия значений относительно короткие и по ним однозначно можно определить, о какой характеристике товара идет речь, например, XL, 16 GB, 13”.</description>
+                    <description locale="en_US">For products which are sold in selectable features mode, all feature values will be displayed inline. Great if feature value names are self-explanatory and explicit in context of a product, e.g. XL, 16 GB, 13”.</description>
+                </option>
+                <option value="select">
+                    <name locale="ru_RU"><![CDATA[Выбор из списка &lt;select&gt;]]></name>
+                    <name locale="en_US"><![CDATA[&lt;select&gt; HTML control]]></name>
+                    <description locale="ru_RU"><![CDATA[Для товаров в режиме продажи «Выбор характеристик» значения характеристик будут предложены на выбор с помощью стандартного выбора &lt;select&gt;. Рекомендуется, если названия значений характеристик содержат более одного-двух слов или по значениям нельзя однозначно понять, о какой характеристике товара идет речь, например, «до 10 часов», «не предусмотрено».]]></description>
+                    <description locale="en_US"><![CDATA[For products which are sold in selectable features mode, feature values will be displayed using a &lt;select&gt; HTML control. Recommended if value names are either too long or ambiguous in context of a product, e.g. “up to 10 hours”, “yes”.]]></description>
+                </option>
+            </options>
+        </setting>
         
         
         
@@ -441,6 +475,14 @@
         <locale>
             <msgid>All Products</msgid>
             <msgstr locale="ru_RU">Все товары</msgstr>
+        </locale>
+        <locale>
+            <msgid>Clear list</msgid>
+            <msgstr locale="ru_RU">Очистить список</msgstr>
+        </locale>
+        <locale>
+            <msgid>Show by</msgid>
+            <msgstr locale="ru_RU">Показывать по</msgstr>
         </locale>
         
     </locales>

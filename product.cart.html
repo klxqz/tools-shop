@@ -1,12 +1,16 @@
 <form id="cart-form{if $wa->get('cart')}-dialog{/if}" method="post" action="{$wa->getUrl('/frontendCart/add')}">
     <div class="ajax_product_info" 
-         data-price="{shop_currency_html($product.price)|escape}"
+         {if !empty($theme_settings.ruble_symbol)}
+             data-price="{shop_currency_html($product.price)|escape}"
+         {else}
+             data-price="{shop_currency($product.price)|escape}" 
+         {/if}
          data-name="{$product.name|escape}" 
          data-url="{$wa->shop->productUrl($product)}" 
          data-img="{shopImage::getUrl(['id' => $product.image_id, 'product_id' => $product.id, 'ext' => $product.ext], '47x47', false)}"
          ></div>
 
-    
+
     {if $wa->get('cart')}
         <h4>{sprintf('[`Buy %s`]',$product.name|escape)}</h4>
         {$wa->shop->productImgHtml($product, '96x96', [ 'itemprop' => 'image', 'id' => 'product-image', 'alt' => $product.name|escape ])}
@@ -18,17 +22,43 @@
             <!-- SELECTABLE FEATURES selling mode -->
             {$default_sku_features = $product.sku_features}
             {$product_available = $product.status}
-            <div class="options">
-                {foreach $features_selectable as $f}
-                    {$f.name}:
-                    <select data-feature-id="{$f.id}" class="sku-feature" name="features[{$f.id}]">
-                        {foreach $f.values as $v_id => $v}
-                            <option value="{$v_id}" {if $v_id == ifset($default_sku_features[$f.id])}selected{/if}>{$v}</option>
-                        {/foreach}
-                    </select>
-                    <br>
-                {/foreach}
-            </div>
+            {if $theme_settings.selectable_features_control == 'inline'}
+                <div class="options">
+                    {foreach $features_selectable as $f}
+                        <div class="inline-select{if $f.type == 'color'} color{/if}">
+                            {foreach $f.values as $v_id => $v}
+                                {if !isset($default_sku_features[$f.id])}
+                                    {$default_sku_features[$f.id]=$v_id}
+                                {/if}
+                                <a data-value="{$v_id}" href="#"class="btn btn-default{if $v_id == ifset($default_sku_features[$f.id])} active{/if}"{if $f.type == 'color'} style="{$v->style}; margin-bottom: 20px;"{/if}>
+                                    {if $f.type == 'color'}
+                                        &nbsp;<i class="icon16 checkmark color_checkmark"></i>
+                                    {/if}
+                                    {if $f.type == 'color'}
+                                        &nbsp;<span class="color_name">{strip_tags($v)}</span>
+                                    {else}
+                                        {$v}
+                                    {/if}
+                                </a>
+                            {/foreach}
+                            <input type="hidden" data-feature-id="{$f.id}" class="sku-feature" name="features[{$f.id}]" value="{ifset($default_sku_features[$f.id])}">
+                        </div>
+
+                    {/foreach}
+                </div>        
+            {else}
+                <div class="options">
+                    {foreach $features_selectable as $f}
+                        {$f.name}:
+                        <select data-feature-id="{$f.id}" class="sku-feature" name="features[{$f.id}]">
+                            {foreach $f.values as $v_id => $v}
+                                <option value="{$v_id}" {if $v_id == ifset($default_sku_features[$f.id])}selected{/if}>{$v}</option>
+                            {/foreach}
+                        </select>
+                        <br>
+                    {/foreach}
+                </div>
+            {/if}
         {else}
 
             <!-- FLAT SKU LIST selling mode -->
@@ -142,9 +172,21 @@
     </div>
 
     <div id="prices" class="price">
-        <span data-price="{shop_currency($product.price, null, null, 0)}" class="price-new">{shop_currency_html($product.price)}</span>
+        <span data-price="{shop_currency($product.price, null, null, 0)}" class="price-new">
+            {if !empty($theme_settings.ruble_symbol)}
+                {shop_currency_html($product.price)}
+            {else}
+                {shop_currency($product.price)}
+            {/if}
+        </span>
         {if $product.compare_price > 0}
-            <span class="price-old">{shop_currency_html($product.compare_price)}</span>
+            <span class="price-old">
+                {if !empty($theme_settings.ruble_symbol)}
+                    {shop_currency_html($product.compare_price)}
+                {else}
+                    {shop_currency($product.compare_price)}
+                {/if}
+            </span>
         {/if}
     </div>
     <div class="cart-block">
@@ -182,7 +224,7 @@
 
 <script type="text/javascript" src="{$wa_theme_url}product.js?v{$wa_theme_version}"></script>
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         new Product('#cart-form{if $wa->get('cart')}-dialog{/if}', {
         currency: {json_encode($currency_info)}
     {if count($product.skus) > 1 or $product.sku_type}

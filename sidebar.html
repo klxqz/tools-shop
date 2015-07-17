@@ -237,8 +237,12 @@
                                 <a href="{$wa->shop->productUrl($v_p)}">{$v_p.name}</a>
                             </div>
                         </h5>
-                        <div class="price">
-                            {shop_currency_html($v_p.price)}                            
+                        <div class="price">  
+                            {if !empty($theme_settings.ruble_symbol)}
+                                {shop_currency_html($v_p.price)}        
+                            {else}
+                                {shop_currency($v_p.price)}      
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -273,7 +277,11 @@
                             </div>
                         </h5>
                         <div class="price">
-                            {shop_currency_html($wl_p.price)}                            
+                            {if !empty($theme_settings.ruble_symbol)}
+                                {shop_currency_html($wl_p.price)}        
+                            {else}
+                                {shop_currency($wl_p.price)}      
+                            {/if}
                         </div>
                     </div>
                 </div>

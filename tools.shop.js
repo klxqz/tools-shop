@@ -1,6 +1,14 @@
+function initClearViewed() {
+    $(document).on('click', '.bt_clean_viewed', function () {
+        $.cookie('viewed_products', '', {expires: 0, path: '/'});
+        location.reload();
+        return false;
+    });
+}
 $(document).ready(function() {
     initCompare();
     initWishlist();
+    initClearViewed();
     if (tagcanvas) {
         initTagcanvas();
     }
@@ -51,7 +59,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#content").on('click', '#product-list form.addtocart .button,.related-slider form.addtocart .button', function() {
+    $("#content").on('click', '#product-list form.addtocart .button:not(.disabled),.related-slider form.addtocart .button:not(.disabled)', function() {
         $(this).closest('form').submit();
         return false;
 
@@ -73,7 +81,11 @@ $(document).ready(function() {
             });
             return false;
         }
-        $.post(f.attr('action') + '?html=1', f.serialize(), function(response) {
+        var html = '';
+        if(ruble_symbol !== undefined && ruble_symbol == 1) {
+            html = '?html=1';
+        }
+        $.post(f.attr('action') + html, f.serialize(), function(response) {
             if (response.status == 'ok') {
                 var cart = $('#cart');
                 var origin = f.closest('li');
@@ -167,7 +179,7 @@ jQuery(document).ready(function() {
     $('.related-slider').bxSlider({
         pager: false,
         controls: true,
-        slideMargin: 30,
+        slideMargin: 20,
         minSlides: 1,
         maxSlides: 4,
         slideWidth: 170,

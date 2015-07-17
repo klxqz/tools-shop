@@ -3,7 +3,11 @@
         {foreach $products as $p}
             <li itemscope itemtype ="http://schema.org/Product"  class="related-info">
                 <div class="ajax_product_info" 
-                     data-price="{shop_currency_html($p.price)|escape}"
+                     {if !empty($theme_settings.ruble_symbol)}
+                         data-price="{shop_currency_html($p.price)|escape}"
+                     {else}
+                         data-price="{shop_currency($p.price)|escape}"
+                     {/if}
                      data-name="{$p.name|escape}" 
                      data-url="{$p.frontend_url}" 
                      data-img="{shopImage::getUrl(['id' => $p.image_id, 'product_id' => $p.id, 'ext' => $p.ext], '47x47', false)}"
@@ -25,8 +29,22 @@
                 </h5>
                 <div itemprop="offers" class="offers" itemscope itemtype="http://schema.org/Offer">
                     <div class="price">
-                        <span itemprop="price" class="price-new">{shop_currency_html($p.price)}</span>
-                        {if $p.compare_price > 0}<span class="price-old"> {shop_currency_html($p.compare_price)} </span>{/if}
+                        <span itemprop="price" class="price-new">
+                            {if !empty($theme_settings.ruble_symbol)}
+                                {shop_currency_html($p.price)}
+                            {else}
+                                {shop_currency($p.price)}
+                            {/if}
+                        </span>
+                        {if $p.compare_price > 0}
+                            <span class="price-old">
+                                {if !empty($theme_settings.ruble_symbol)}
+                                    {shop_currency_html($p.compare_price)}
+                                {else}
+                                    {shop_currency($p.price)}
+                                {/if}
+                            </span>
+                        {/if}
                     </div>
 
                     {if $wa->shop->settings('ignore_stock_count') || $p.count === null || $p.count > 0}

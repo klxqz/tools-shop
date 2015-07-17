@@ -51,7 +51,11 @@
                         <span class="gray">&times;</span> <input type="text" name="quantity[{$item.id}]" value="{$item.quantity}" class="qty{if !empty($item.error)} error{/if}">
                     </td>
                     <td class="align-center item-total nowrap">
-                        {shop_currency_html($item.full_price, true)}
+                        {if !empty($theme_settings.ruble_symbol)}
+                            {shop_currency_html($item.full_price, true)}
+                        {else}
+                            {shop_currency($item.full_price, true)}
+                        {/if}
                     </td>
                     <td>
                         <a class="delete" href="#" title="[`Remove from cart`]"><i class="icon16 remove"></i></a>
@@ -68,7 +72,13 @@
                     {/if}
                 </td>
                 <td class="align-center">[`Discount`]</td>
-                <td class="align-center cart-discount nowrap">&minus; {shop_currency_html($discount, true)}</td>
+                <td class="align-center cart-discount nowrap">
+                    {if !empty($theme_settings.ruble_symbol)}
+                        &minus; {shop_currency_html($discount, true)}
+                    {else}
+                        &minus; {shop_currency($discount, true)}
+                    {/if}
+                </td>
                 <td>&nbsp;</td>
             </tr>
 
@@ -83,53 +93,65 @@
                             <input type="submit" name="use_affiliate" value="[`Use bonus`]">
                         {/if}
                     </td>
-                    <td class="align-center">&minus; {if $use_affiliate}{shop_currency_html(shopAffiliate::convertBonus($used_affiliate_bonus))}{else}0{/if}</td>
-                    <td>&nbsp;</td>
-                </tr>
-            {/if}
-
-            <!-- TOTAL -->
-            <tr class="large no-border">
-                <td colspan="3">[`Total`]</td>
-                <td class="cart-total align-center total bold nowrap">{shop_currency_html($cart.total, true)}</td>
+                    <td class="align-center">&minus; {if $use_affiliate}
+                        {if !empty($theme_settings.ruble_symbol)}
+                            {shop_currency_html(shopAffiliate::convertBonus($used_affiliate_bonus))}
+                        {else}
+                            {shop_currency(shopAffiliate::convertBonus($used_affiliate_bonus))}
+                        {/if}
+                    {else}0{/if}</td>
                 <td>&nbsp;</td>
             </tr>
+        {/if}
 
-            <!-- checkout -->
-            <tr class="no-border">
-                <td colspan="3">
-                    <span class="gray">&larr;</span> <a href="{$wa_app_url}" class="gray">[`Back to the store`]</a>
-                    {if shopAffiliate::isEnabled() && !empty($add_affiliate_bonus)}
-                        <em class="affiliate float-right">{sprintf("[`This order will add +%s points to your affiliate bonus.`]", $add_affiliate_bonus)}</em>
-                    {/if}
-                </td>
-                <td class="align-center bold">
-                    <input name="checkout" type="submit" value="[`Proceed to checkout`]" class="button large">
-                </td>
-                <td>&nbsp;</td>
-            </tr>
+        <!-- TOTAL -->
+        <tr class="large no-border">
+            <td colspan="3">[`Total`]</td>
+            <td class="cart-total align-center total bold nowrap">
+                {if !empty($theme_settings.ruble_symbol)}
+                    {shop_currency_html($cart.total, true)}
+                {else}
+                    {shop_currency($cart.total, true)}
+                {/if}
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+
+        <!-- checkout -->
+        <tr class="no-border">
+            <td colspan="3">
+                <span class="gray">&larr;</span> <a href="{$wa_app_url}" class="gray">[`Back to the store`]</a>
+                {if shopAffiliate::isEnabled() && !empty($add_affiliate_bonus)}
+                    <em class="affiliate float-right">{sprintf("[`This order will add +%s points to your affiliate bonus.`]", $add_affiliate_bonus)}</em>
+                {/if}
+            </td>
+            <td class="align-center bold">
+                <input name="checkout" type="submit" value="[`Proceed to checkout`]" class="button large">
+            </td>
+            <td>&nbsp;</td>
+        </tr>
 
 
 
-        </table>
+    </table>
 
 
-        <!-- plugin hook: 'frontend_cart' -->
-        {* @event frontend_cart.%plugin_id% *}
-        {foreach $frontend_cart as $_}
-            {$_}
-        {/foreach}      
-    </form>
+    <!-- plugin hook: 'frontend_cart' -->
+    {* @event frontend_cart.%plugin_id% *}
+    {foreach $frontend_cart as $_}
+        {$_}
+    {/foreach}      
+</form>
 
 
-    {$crossselling = $wa->shop->crossSelling($cart.items, 'product_id')}
-    {if $crossselling}
+{$crossselling = $wa->shop->crossSelling($cart.items, 'product_id')}
+{if $crossselling}
 
-        <h3>[`Better together`]</h3>
-        <div class="related small">
-            {include file="list-slider.html" products=$crossselling}
-        </div>
+    <h3>[`Better together`]</h3>
+    <div class="related small">
+        {include file="list-slider.html" products=$crossselling}
+    </div>
 
-    {/if}
+{/if}
 
 {/if}

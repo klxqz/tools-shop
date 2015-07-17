@@ -6,20 +6,23 @@
 
                 <div class="padding">
                     <div class="ajax_product_info" 
-                         data-price="{shop_currency_html($p.price)|escape}"
+                         {if !empty($theme_settings.ruble_symbol)}
+                             data-price="{shop_currency_html($p.price)|escape}"
+                         {else}
+                             data-price="{shop_currency($p.price)|escape}"
+                         {/if}
                          data-name="{$p.name|escape}" 
                          data-url="{$p.frontend_url}" 
                          data-img="{shopImage::getUrl(['id' => $p.image_id, 'product_id' => $p.id, 'ext' => $p.ext, 'default' => "`$wa_theme_url`img/dummy200.png"], '80x80', false)}"
                          ></div>
                     <div class="image">
                         <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{/if}">
+                            
                             {$badge_html = $wa->shop->badgeHtml($p.badge)}
                             {if $badge_html}
-                                <div class="corner top right">{$badge_html}</div>
+                                <div class="corner top left">{$badge_html}</div>
                             {/if}
                             {$wa->shop->productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'default' => "`$wa_theme_url`img/dummy200.png"])}
-
-
                         </a>
                     </div>
                     <div class="left">
@@ -39,8 +42,22 @@
 
                         <div itemprop="offers" class="offers" itemscope itemtype="http://schema.org/Offer">
                             <div class="price">
-                                <span itemprop="price" class="price-new">{shop_currency_html($p.price)}</span>
-                                {if $p.compare_price > 0}<span class="price-old"> {shop_currency_html($p.compare_price)} </span>{/if}
+                                <span itemprop="price" class="price-new">
+                                    {if !empty($theme_settings.ruble_symbol)}
+                                        {shop_currency_html($p.price)}
+                                    {else}
+                                        {shop_currency($p.price)}
+                                    {/if}
+                                </span>
+                                {if $p.compare_price > 0}
+                                    <span class="price-old">
+                                        {if !empty($theme_settings.ruble_symbol)}
+                                            {shop_currency_html($p.compare_price)}
+                                        {else}
+                                            {shop_currency($p.price)}
+                                        {/if}
+                                    </span>
+                                {/if}
                             </div>
 
 

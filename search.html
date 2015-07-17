@@ -18,7 +18,7 @@
     {else}
         {$products = null}   
     {/if}
-{else}
+{elseif $wa->get('query')}
     {$is_products_pers = true}
     {$title = "[`Search by query`] «`$wa->get('query')|escape`»"}
 {/if}
@@ -39,6 +39,14 @@
 {else}
 
     <div class="product-filter">
+        {if $wa->get('list') == 'viewed_products'}
+            <a class="button bt_clean_viewed" href="/cart/">
+                <span>
+                    <i class="fa fa-trash"></i>
+                    [`Clear list`]
+                </span>
+            </a>
+        {/if}
         <div class="display"> 
             <a class="display_view" data-view="list" id="list_a">
                 <i class="fa fa-list"></i>
