@@ -1,5 +1,7 @@
 function Product(form, options) {
+
     this.form = $(form);
+
     this.button = this.form.find("#button-cart");
     for (var k in options) {
         this[k] = options[k];
@@ -86,6 +88,15 @@ function Product(form, options) {
         }
         $.post(f.attr('action') + html, f.serialize(), function (response) {
             if (response.status == 'ok') {
+                /* подсветка и счетчик panel*/
+                var now_int = $("#panel .cart .count").text();
+                $('#panel .cart .count').html(response.data.count);
+                var new_int = $("#panel .cart .count").text();
+                punsh_utdate(now_int, new_int, 'cart');
+                if (response.data.count > 0) {
+                    $('#panel .cart').removeAttr('disabled');
+                }
+
                 var cart = $('#cart');
                 var cart_div = f;
 
@@ -117,7 +128,6 @@ function Product(form, options) {
                         item.find('.quantity span').text(quantity + q);
                         cart.find('.shopping_cart_total').html(response.data.total);
                         cart.find('#cart-total2').html(response.data.count);
-                        $('#panel .cart .count').html(response.data.count);
                         cart.find('.shopping_cart_discount').html(response.data.discount);
                     } else {
                         var info = cart_div.find('.ajax_product_info');
@@ -132,7 +142,6 @@ function Product(form, options) {
                         $('#cart_block_list_item_tmpl').tmpl(tpl_data).appendTo('.mini-cart-info table tbody');
                         cart.find('.shopping_cart_total').html(response.data.total);
                         cart.find('#cart-total2').html(response.data.count);
-                        $('#panel .cart .count').html(response.data.count);
                         cart.find('.shopping_cart_discount').html(response.data.discount);
                     }
                     $('#notification').html('<div class="success" style="display: none;"><i class="fa fa-thumbs-up"></i>Товар успешно добавлен в корзину!<span class="close"><i class="fa fa-times-circle"></i></span></div>');
@@ -140,6 +149,9 @@ function Product(form, options) {
                     setTimeout(function () {
                         $('.success').fadeOut(1000)
                     }, 3000);
+                    if ($('.Bettertogether').length) {
+                        location.reload();
+                    }
 
                 });
                 if (cart_div.closest('.dialog').length) {
@@ -278,28 +290,10 @@ Product.prototype.updatePrice = function (price, compare_price) {
 }
 
 $(function () {
-    $('a.cart-minus').click(function () {
-        var count = parseInt($('input[name=quantity]').val());
-        if (count && count - 1 > 0) {
-            $('input[name=quantity]').val(count - 1);
-        } else {
-            $('input[name=quantity]').val(1);
-        }
-        return false;
-    });
-    $('a.cart-plus').click(function () {
-        var count = parseInt($('input[name=quantity]').val());
-        if (count) {
-            $('input[name=quantity]').val(count + 1);
-        } else {
-            $('input[name=quantity]').val(1);
-        }
-
-        return false;
-    });
-
+   
     // compare block
     $("a.compare-add").click(function () {
+        var now_int = $("#panel .compare .count").text();
         var compare = $.cookie('shop_compare');
         if (compare) {
             compare += ',' + $(this).data('product');
@@ -311,13 +305,21 @@ $(function () {
             $("#compare-link").attr('href', url).show().find('span.count').html(compare.split(',').length);
         }
         $("#panel .compare .count").text(compare.split(',').length);
+
+        if (compare.split(',').length > 1)
+        {
+            $("#panel .compare").removeAttr('disabled');
+        }
         $.cookie('shop_compare', compare, {expires: 30, path: '/'});
         $(this).hide();
         $("a.compare-remove").show();
+        var new_int = $("#panel .compare .count").text();
+        punsh_utdate(now_int, new_int, 'compare');
         return false;
     });
     $("a.compare-remove").click(function () {
         var compare = $.cookie('shop_compare');
+        var now_int = $("#panel .compare .count").text();
         if (compare) {
             compare = compare.split(',');
         } else {
@@ -328,19 +330,24 @@ $(function () {
             compare.splice(i, 1)
         }
         $("#compare-link").hide();
+
         if (compare) {
             $.cookie('shop_compare', compare.join(','), {expires: 30, path: '/'});
             $("#panel .compare .count").text(compare.length);
         } else {
             $("#panel .compare .count").text(0);
+
             $.cookie('shop_compare', null);
         }
         $(this).hide();
         $("a.compare-add").show();
+        var new_int = $("#panel .compare .count").text();
+        punsh_utdate(now_int, new_int, 'compare');
         return false;
     });
 
     $("a.wishlist-add").click(function () {
+        var now_int = $("#panel .wishlist .count").text();
         var wishlist = $.cookie('shop_wishlist');
         if (wishlist) {
             wishlist += ',' + $(this).data('product');
@@ -352,9 +359,12 @@ $(function () {
         $(this).hide();
         $("a.wishlist-remove").show();
         $("#wishlist-link").show();
+        var new_int = $("#panel .wishlist .count").text();
+        punsh_utdate(now_int, new_int, 'wishlist');
         return false;
     });
     $("a.wishlist-remove").click(function () {
+        var now_int = $("#panel .wishlist .count").text();
         var wishlist = $.cookie('shop_wishlist');
         if (wishlist) {
             wishlist = wishlist.split(',');
@@ -375,12 +385,220 @@ $(function () {
         }
         $(this).hide();
         $("a.wishlist-add").show();
+        var new_int = $("#panel .wishlist .count").text();
+        punsh_utdate(now_int, new_int, 'wishlist');
         return false;
     });
 
 
-    $(document).on('click', '#button-cart:not(.disabled)', function () {
-        $(this).closest('form').submit();
-    });
+});
 
+
+$(function () {
+    if (typeof product_reviews_display_mode == 'undefined' || product_reviews_display_mode != 'product_page') {
+        return false;
+    }
+    var loading = $('<div><i class="icon16 loading"></i></div>');
+    $('#product_comments_block_tab')
+            .append(loading)
+            .load(product_url + 'reviews/ .reviews', {random: "1"},
+            function () {
+                initFormControl();
+
+                $('div.wa-captcha .wa-captcha-refresh, div.wa-captcha .wa-captcha-img').unbind('click').click(function () {
+                    var div = $(this).parents('div.wa-captcha');
+                    var captcha = div.find('.wa-captcha-img');
+                    if (captcha.length) {
+                        captcha.attr('src', captcha.attr('src').replace(/\?.*$/, '?rid=' + Math.random()));
+                        captcha.one('load', function () {
+                            div.find('.wa-captcha-input').focus();
+                        });
+                    }
+                    ;
+                    div.find('input').val('');
+                    return false;
+                });
+
+                /**
+                 * Hotkey combinations
+                 * {Object}
+                 */
+                var hotkeys = {
+                    'alt+enter': {
+                        ctrl: false, alt: true, shift: false, key: 13
+                    },
+                    'ctrl+enter': {
+                        ctrl: true, alt: false, shift: false, key: 13
+                    },
+                    'ctrl+s': {
+                        ctrl: true, alt: false, shift: false, key: 17
+                    }
+                };
+
+                var form_wrapper = $('#product-reivew-form');
+                var form = form_wrapper.find('form');
+                var content = $('.tab-content .reviews');
+
+                var input_rate = form.find('input[name=rate]');
+                if (!input_rate.length) {
+                    input_rate = $('<input name="rate" type="hidden" value=0>').appendTo(form);
+                }
+                $('#review-rate').rateWidget({
+                    onUpdate: function (rate) {
+                        input_rate.val(rate);
+                    }
+                });
+
+                content.off('click', '.review-reply, .write-review a').on('click', '.review-reply, .write-review a', function () {
+                    var self = $(this);
+                    var item = self.parents('li:first');
+                    var parent_id = parseInt(item.attr('data-id'), 10) || 0;
+                    prepareAddingForm.call(self, parent_id);
+                    return false;
+                });
+
+                var captcha = $('.wa-captcha');
+                var provider_list = $('#user-auth-provider li');
+                var current_provider = provider_list.filter('.selected').attr('data-provider');
+                if (current_provider == 'guest' || !current_provider) {
+                    captcha.show();
+                } else {
+                    captcha.hide();
+                }
+
+                provider_list.find('a').click(function () {
+                    var self = $(this);
+                    var li = self.parents('li:first');
+                    if (li.hasClass('selected')) {
+                        return false;
+                    }
+                    li.siblings('.selected').removeClass('selected');
+                    li.addClass('selected');
+
+                    var provider = li.attr('data-provider');
+                    form.find('input[name=auth_provider]').val(provider);
+                    if (provider == 'guest') {
+                        $('div.provider-fields').hide();
+                        $('div.provider-fields[data-provider=guest]').show();
+                        captcha.show();
+                        return false;
+                    }
+                    if (provider == current_provider) {
+                        $('div.provider-fields').hide();
+                        $('div.provider-fields[data-provider=' + provider + ']').show();
+                        captcha.hide();
+                        return false;
+                    }
+
+                    var left = (screen.width - 600) / 2;
+                    var top = (screen.height - 400) / 2;
+                    window.open(
+                            $(this).attr('href'), "oauth", "width=600,height=400,left=" + left + ",top=" + top + ",status=no,toolbar=no,menubar=no"
+                            );
+                    return false;
+                });
+
+                addHotkeyHandler('textarea', 'ctrl+enter', addReview);
+                form.submit(function () {
+                    addReview();
+                    return false;
+                });
+
+                function addReview() {
+                    $.post(
+                            location.href.replace(/\/#\/[^#]*|\/#|\/$/g, '') + '/reviews/add/',
+                            form.serialize(),
+                            function (r) {
+                                if (r.status == 'fail') {
+                                    clear(form, false);
+                                    showErrors(form, r.errors);
+                                    return;
+                                }
+                                if (r.status != 'ok' || !r.data.html) {
+                                    if (console) {
+                                        console.error('Error occured.');
+                                    }
+                                    return;
+                                }
+                                var html = r.data.html;
+                                var parent_id = parseInt(r.data.parent_id, 10) || 0;
+                                var parent_item = parent_id ? form.parents('li:first') : content;
+                                var ul = $('ul.reviews-branch:first', parent_item);
+                                if (parent_id) {
+                                    ul.show().append(html);
+                                } else {
+                                    ul.show().prepend(html);
+                                }
+                                $('.reviews-count-text').text(r.data.review_count_str);
+                                $('.reviews-count').text(r.data.count);
+                                form.find('input[name=count]').val(r.data.count);
+                                clear(form, true);
+                                content.find('.write-review a').click();
+                                form_wrapper.hide();
+                                if (typeof success === 'function') {
+                                    success(r);
+                                }
+                            },
+                            'json')
+                            .error(function (r) {
+                                if (console) {
+                                    console.error(r.responseText ? 'Error occured: ' + r.responseText : 'Error occured.');
+                                }
+                            });
+                }
+                ;
+
+                function showErrors(form, errors) {
+                    for (var name in errors) {
+                        $('[name=' + name + ']', form).after($('<em class="errormsg"></em>').text(errors[name])).addClass('error');
+                    }
+                }
+                ;
+
+                function clear(form, clear_inputs) {
+                    clear_inputs = typeof clear_inputs === 'undefined' ? true : clear_inputs;
+                    $('.errormsg', form).remove();
+                    $('.error', form).removeClass('error');
+                    $('.wa-captcha-refresh', form).click();
+                    if (clear_inputs) {
+                        $('input[name=captcha], textarea', form).val('');
+                        $('input[name=rate]', form).val(0);
+                        $('input[name=title]', form).val('');
+                        $('.rate', form).trigger('clear');
+                    }
+                }
+                ;
+
+                function prepareAddingForm(review_id)
+                {
+                    var self = this; // clicked link
+                    if (review_id) {
+                        self.parents('.actions:first').after(form_wrapper);
+                        $('.rate ', form).trigger('clear').parents('.review-field:first').hide();
+                    } else {
+                        self.parents('.write-review').after(form_wrapper);
+                        form.find('.rate').parents('.review-field:first').show();
+                    }
+                    clear(form, false);
+                    $('input[name=parent_id]', form).val(review_id);
+                    form_wrapper.show();
+                }
+                ;
+
+                function addHotkeyHandler(item_selector, hotkey_name, handler) {
+                    var hotkey = hotkeys[hotkey_name];
+                    form.off('keydown', item_selector).on('keydown', item_selector,
+                            function (e) {
+                                if (e.keyCode == hotkey.key &&
+                                        e.altKey == hotkey.alt &&
+                                        e.ctrlKey == hotkey.ctrl &&
+                                        e.shiftKey == hotkey.shift)
+                                {
+                                    return handler();
+                                }
+                            }
+                    );
+                }
+                ;
+            });
 });

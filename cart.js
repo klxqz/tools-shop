@@ -1,5 +1,6 @@
 $(function () {
 
+ 
     function updateCart(data)
     {
         $(".cart-total").html(data.total);
@@ -7,13 +8,11 @@ $(function () {
             $(".cart-discount").closest('tr').show();
         }
         $(".cart-discount").html('&minus; ' + data.discount);
-        
         if (data.add_affiliate_bonus) {
             $(".affiliate").show().html(data.add_affiliate_bonus);
         } else {
             $(".affiliate").hide();
         }
-        
     }
 
     // add to cart block: services
@@ -32,6 +31,21 @@ $(function () {
     $(".cart a.delete").click(function () {
         var tr = $(this).closest('tr');
         $.post('delete/', {html: 1, id: tr.data('id')}, function (response) {
+
+            /* подсветка и счетчик panel*/
+            var now_int = $("#panel .cart .count").text();
+            $('#panel .cart .count').html(response.data.count);
+            var new_int = $("#panel .cart .count").text();
+            punsh_utdate(now_int, new_int, 'cart');
+            if (response.data.count > 0) {
+                $('#panel .cart').removeAttr('disabled');
+            }
+            $('#cart [data-id="' + tr.data('id') + '"]').remove();
+            $('#cart  .shopping_cart_total').html(response.data.total);
+            $('#cart  .shopping_cart_discount').html(response.data.discount);
+            $('#cart  #cart-total2').text(response.data.count);
+
+
             if (response.data.count == 0) {
                 location.reload();
             }
@@ -47,6 +61,23 @@ $(function () {
             var tr = that.closest('tr');
             if (that.val()) {
                 $.post('save/', {html: 1, id: tr.data('id'), quantity: that.val()}, function (response) {
+                   
+                    /* подсветка и счетчик panel*/
+                    var now_int = $("#panel .cart .count").text();
+                    $('#panel .cart .count').html(response.data.count);
+                    var new_int = $("#panel .cart .count").text();
+                    punsh_utdate(now_int, new_int, 'cart');
+                    if (response.data.count > 0) {
+                        $('#panel .cart').removeAttr('disabled');
+                    }
+                    var quantity = response.data.q == null ? that.val() : response.data.q;
+                    $('#cart [data-id="' + tr.data('id') + '"] .quantity span').text(quantity);
+                    $('#cart [data-id="' + tr.data('id') + '"] .total').html(response.data.item_total);
+                    $('#cart  .shopping_cart_total').html(response.data.total);
+                    $('#cart  .shopping_cart_discount').html(response.data.discount);
+                    $('#cart  #cart-total2').text(response.data.count);
+
+
                     tr.find('.item-total').html(response.data.item_total);
                     if (response.data.q) {
                         that.val(response.data.q);
@@ -68,23 +99,23 @@ $(function () {
         var div = $(this).closest('div');
         var tr = $(this).closest('tr');
         if ($(this).is(':checked')) {
-           var parent_id = $(this).closest('tr').data('id')
-           var data = {html: 1, parent_id: parent_id, service_id: $(this).val()};
-           var variants = $('select[name="service_variant[' + parent_id + '][' + $(this).val() + ']"]');
-           if (variants.length) {
-               data['service_variant_id'] = variants.val();
-           }
-           $.post('add/', data, function(response) {
-               div.data('id', response.data.id);
-               tr.find('.item-total').html(response.data.item_total);
-               updateCart(response.data);
-           }, "json");
+            var parent_id = $(this).closest('tr').data('id')
+            var data = {html: 1, parent_id: parent_id, service_id: $(this).val()};
+            var variants = $('select[name="service_variant[' + parent_id + '][' + $(this).val() + ']"]');
+            if (variants.length) {
+                data['service_variant_id'] = variants.val();
+            }
+            $.post('add/', data, function (response) {
+                div.data('id', response.data.id);
+                tr.find('.item-total').html(response.data.item_total);
+                updateCart(response.data);
+            }, "json");
         } else {
-           $.post('delete/', {html: 1, id: div.data('id')}, function (response) {
-               div.data('id', null);
-               tr.find('.item-total').html(response.data.item_total);
-               updateCart(response.data);
-           }, "json");
+            $.post('delete/', {html: 1, id: div.data('id')}, function (response) {
+                div.data('id', null);
+                tr.find('.item-total').html(response.data.item_total);
+                updateCart(response.data);
+            }, "json");
         }
     });
 

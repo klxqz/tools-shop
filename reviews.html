@@ -68,7 +68,7 @@
             <a href="#" class="inline-link"><b><i class="fa fa-pencil"></i><i>[`Write a review`]</i></b></a>
         </h4>
         
-        <div class="review-form" id="product-reivew-form">
+        <div class="review-form" id="product-reivew-form" {if $reviews_count > 0}style="display:none;"{/if}>
             
             {$current_user_id = $wa->userId()}
             

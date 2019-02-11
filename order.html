@@ -1,0 +1,98 @@
+{$_cart_count = $wa->shop->cart->count()}
+
+{$wa->globals("hideCart", true)}
+
+
+
+{*EMPTY*}
+{if empty($_cart_count)}
+    <div class="s-cart-empty-wrapper">
+
+        <p class="s-description">{$config.cart.empty_text|default:"[`Your shopping cart is empty.`]"|escape}</p>
+        <p class="s-actions-wrapper">
+            <a href="{$wa_app_url}">[`Go to home page`]</a>
+        </p>
+    </div>
+    {*ORDER*}
+{else}
+    <link rel="stylesheet" href="{$wa_theme_url}css/order.css?v={$wa_theme_version}">
+    <div class="s-order-page" id="js-order-page">
+        <div class="s-order-column">
+
+            <section class="s-order-section" id="js-order-cart">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="hint float-right s-delete-button js-clear-cart" href="javascript:void(0);">
+                                <span class="s-delete-icon"><i class="fa fa-times"></i></span> Удалить все товары
+                            </a>
+
+                            {$config.cart.block_name|default:"[`Shopping cart`]"|escape}
+                        </h4>
+                    </div>
+                </div>
+
+                <div class="s-section-body">
+                    {$wa->shop->checkout()->cart([
+                    "DEBUG" => true,
+                    "wrapper" => "#js-order-cart"
+                    ])}
+                </div>
+            </section>
+
+        </div>
+        <br/>
+        <div class="s-order-column">
+
+            <section class="s-order-section" id="js-order-form">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            {$config.order.block_name|default:"[`Checkout`]"|escape}
+                        </h4>
+                    </div>
+                </div>
+
+                <div class="s-section-body">
+                    {$wa->shop->checkout()->form([
+                    "DEBUG" => true,
+                    "wrapper" => "#js-order-form"
+                    ])}
+                </div>
+            </section>
+
+        </div>
+
+        <script>
+            (function ($) {
+
+                (typeof window.ShopOrderPage === "function" ? init() : load().then(init));
+
+                function load() {
+                    var deferred = $.Deferred();
+
+                    $.getScript("{$wa_theme_url}js/order.js?v={$wa->version()}", function () {
+                        deferred.resolve();
+                    });
+
+                    return deferred.promise();
+                }
+
+                function init() {
+                    new window.ShopOrderPage({
+                        $wrapper: $("#js-order-page"),
+                        urls: {
+                            "checkbox-icon": "{$wa_app_static_url}img/frontend/order/svg/sprite.svg#checkbox-yes"
+                        }
+                    });
+                }
+
+            })(jQuery);
+        </script>
+    </div>
+{/if}
+
+<!-- plugin hook: 'frontend_order' -->
+{* @event frontend_order.%plugin_id% *}
+{foreach $frontend_order as $_}{$_}{/foreach}

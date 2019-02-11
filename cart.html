@@ -7,8 +7,6 @@
 
 {else}
 
-
-
     <!-- general welcome text -->
 
     <h1 class="style-1">[`Shopping cart`]</h1>
@@ -18,7 +16,7 @@
             <!-- products -->
             {foreach $cart.items as $item}
                 <tr data-id="{$item.id}">
-                    <td class="min-width"><a href="{$wa->shop->productUrl($item.product)}" title="{$item.product.name|escape}">{$wa->shop->productImgHtml($item.product, '48x48')}</a></td>
+                    <td class="min-width"><a href="{$wa->shop->productUrl($item.product)}" title="{$item.product.name|escape}">{$wa->shop->productImgHtml($item.product, '110')}</a></td>
                     <td>
                         <a href="{$wa->shop->productUrl($item.product)}" class="bold">{$item.product.name|escape}</a>
                         {if $item.sku_name && $item.sku_name != $item.product.name}
@@ -47,28 +45,34 @@
                         {/if}
                         {if !empty($item.error)}<script>alert({json_encode($item.error)});</script>{/if}
                     </td>
-                    <td class="align-center nowrap">
-                        <span class="gray">&times;</span> <input type="text" name="quantity[{$item.id}]" value="{$item.quantity}" class="qty{if !empty($item.error)} error{/if}">
+                    <td class="align-center quantity_td  nowrap">
+
+                        <a class="cart-minus button" href="#"><span><i class="fa fa-minus"></i></span></a>
+                        <input type="text" value="{$item.quantity}" size="2" name="quantity[{$item.id}]" class="q-mini qty{if !empty($item.error)} error{/if}">
+                        <a class="cart-plus button" href="#"><span><i class="fa fa-plus"></i></span></a>
+
                     </td>
-                    <td class="align-center item-total nowrap">
+                    <td class="align-right item-total nowrap">
                         {if !empty($theme_settings.ruble_symbol)}
                             {shop_currency_html($item.full_price, true)}
                         {else}
                             {shop_currency($item.full_price, true)}
                         {/if}
                     </td>
-                    <td>
-                        <a class="delete" href="#" title="[`Remove from cart`]"><i class="icon16 remove"></i></a>
+                    <td class="cart_delete">
+                        <a class="delete" href="#" title="[`Remove from cart`]"><i class="fa fa-trash"></i></a>
                     </td>
                 </tr>
             {/foreach}
+        </table>
+        <table style="width: 100%;">
 
             <!-- discount coupon -->
-            <tr class="no-border" {if !shopDiscounts::isEnabled('coupons') && !$discount}style="display:none"{/if}>
+            <tr class="no-border discount" {if !shopDiscounts::isEnabled('coupons') && !$discount}style="display:none"{/if}>
                 <td colspan="2" class="no-border">
                     {if shopDiscounts::isEnabled('coupons')}
-                        [`Discount coupon (if you have one)`]:
-                        <input type="text" name="coupon_code" value="{$coupon_code|escape}"> <input type="submit"  value="[`Apply`]">
+                        <div>[`Discount coupon (if you have one)`]:</div>
+                        <div><input type="text" name="coupon_code" value="{$coupon_code|escape}"> <input type="submit"  value="[`Apply`]"></div>
                     {/if}
                 </td>
                 <td class="align-center">[`Discount`]</td>
@@ -79,7 +83,6 @@
                         &minus; {shop_currency($discount, true)}
                     {/if}
                 </td>
-                <td>&nbsp;</td>
             </tr>
 
             {if shopAffiliate::isEnabled() && $affiliate_bonus > 0}
@@ -100,12 +103,12 @@
                             {shop_currency(shopAffiliate::convertBonus($used_affiliate_bonus))}
                         {/if}
                     {else}0{/if}</td>
-                <td>&nbsp;</td>
+
             </tr>
         {/if}
 
         <!-- TOTAL -->
-        <tr class="large no-border">
+        <tr class=" TOTAL large no-border">
             <td colspan="3">[`Total`]</td>
             <td class="cart-total align-center total bold nowrap">
                 {if !empty($theme_settings.ruble_symbol)}
@@ -114,26 +117,33 @@
                     {shop_currency($cart.total, true)}
                 {/if}
             </td>
-            <td>&nbsp;</td>
+
+        </tr>
+           </table>
+            <table style="width: 100%;">
+                
+        <!-- shopAffiliate -->
+        <tr class="no-border">
+            <td colspan="5" class="align-center"> 
+                {if shopAffiliate::isEnabled() && !empty($add_affiliate_bonus)}
+                    <em class="affiliate float-right">{sprintf("[`This order will add +%s points to your affiliate bonus.`]", $add_affiliate_bonus)}</em>
+                {/if}
+            </td>
         </tr>
 
         <!-- checkout -->
         <tr class="no-border">
             <td colspan="3">
                 <span class="gray">&larr;</span> <a href="{$wa_app_url}" class="gray">[`Back to the store`]</a>
-                {if shopAffiliate::isEnabled() && !empty($add_affiliate_bonus)}
-                    <em class="affiliate float-right">{sprintf("[`This order will add +%s points to your affiliate bonus.`]", $add_affiliate_bonus)}</em>
-                {/if}
             </td>
-            <td class="align-center bold">
+            <td class="align-right bold">
                 <input name="checkout" type="submit" value="[`Proceed to checkout`]" class="button large">
             </td>
-            <td>&nbsp;</td>
         </tr>
+  </table>
 
 
-
-    </table>
+ 
 
 
     <!-- plugin hook: 'frontend_cart' -->
@@ -148,7 +158,7 @@
 {if $crossselling}
 
     <h3>[`Better together`]</h3>
-    <div class="related small">
+    <div class="related small Bettertogether">
         {include file="list-slider.html" products=$crossselling}
     </div>
 

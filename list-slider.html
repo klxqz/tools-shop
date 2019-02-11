@@ -10,7 +10,7 @@
                      {/if}
                      data-name="{$p.name|escape}" 
                      data-url="{$p.frontend_url}" 
-                     data-img="{shopImage::getUrl(['id' => $p.image_id, 'product_id' => $p.id, 'ext' => $p.ext], '47x47', false)}"
+                     data-img="{shopImage::getUrl(['id' => $p.image_id, 'product_id' => $p.id, 'ext' => $p.ext], '70', false)}"
                      ></div>
                 <div class="image">
                     <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{/if}">
@@ -41,24 +41,25 @@
                                 {if !empty($theme_settings.ruble_symbol)}
                                     {shop_currency_html($p.compare_price)}
                                 {else}
-                                    {shop_currency($p.price)}
+                                    {shop_currency($p.compare_price)}
                                 {/if}
                             </span>
                         {/if}
                     </div>
 
-                    {if $wa->shop->settings('ignore_stock_count') || $p.count === null || $p.count > 0}
-                        <form class="addtocart" {if $p.sku_count > 1}data-url="{$p.frontend_url}?cart=1"{/if} method="post" action="{$wa->getUrl('/frontendCart/add')}">
-                            <input type="hidden" name="product_id" value="{$p.id}">
 
-                            <div class="cart-button">
-                                <div class="cart">
-                                    <a title="[`Add to cart`]" class="button">
-                                        <i class="fa fa-shopping-cart"></i><span>[`Add to cart`]</span>
-                                    </a>
-                                </div>
+                    <form class="addtocart" {if $p.sku_count > 1}data-url="{$p.frontend_url}?cart=1"{/if} method="post" action="{$wa->getUrl('/frontendCart/add')}">
+                        <input type="hidden" name="product_id" value="{$p.id}">
+
+                        <div class="cart-button">
+                            <div class="cart">
+                                <a title="[`Add to cart`]" class="button{if !($wa->shop->settings('ignore_stock_count') || $p.count === null || $p.count > 0)} disabled{/if}">
+                                    <i class="fa fa-shopping-cart"></i><span>[`Add to cart`]</span>
+                                </a>
                             </div>
-                        </form>
+                        </div>
+                    </form>
+                    {if $wa->shop->settings('ignore_stock_count') || $p.count === null || $p.count > 0}
                         <link itemprop="availability" href="http://schema.org/InStock" />
                     {else}
                         <link itemprop="availability" href="http://schema.org/OutOfStock" />

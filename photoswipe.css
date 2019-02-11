@@ -56,11 +56,6 @@ div.ps-carousel-item-loading
 	background: url(img/loader.gif) no-repeat center center; 
 }
 
-div.ps-carousel-item-error 
-{ 
-	background: url(img/error.gif) no-repeat center center; 
-}
-
 
 /* Caption */
 div.ps-caption

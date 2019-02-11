@@ -1,0 +1,41 @@
+{function reviews_content}
+    <div id="product_comments_block_tab">
+        {if $theme_settings.product_reviews_display_mode == 'separate_page'}
+            {if !empty($reviews)}
+                {foreach $reviews as $review}
+                    {include file="review.html" reply_allowed=false inline}
+                {/foreach}
+            {/if}
+
+            {if empty($reviews)}
+                <p>{sprintf('[`Be the first to <a href="%s">write a review</a> of this product!`]', 'reviews/')}</p>
+            {else}
+                {sprintf(_w(
+                            'Read <a href="%s">all %d review</a> on %s', 
+                            'Read <a href="%s">all %d reviews</a> on %s', 
+                            $reviews_total_count, false
+                        ), 'reviews/', $reviews_total_count, $product.name|escape)
+                }
+            {/if}            
+        {/if}
+
+    </div>
+    {if $theme_settings.product_reviews_display_mode == 'product_page'}
+        <script type="text/javascript" src="{$wa_app_static_url}js/rate.widget.js"></script>
+        <script type="text/javascript">
+            var product_reviews_display_mode = 'product_page';
+            var product_url = '{$wa->shop->productUrl($product)}';
+        </script>
+    {/if}
+{/function}
+
+{if !empty($content_only)}
+    {reviews_content}
+{else}
+    <section class="page-product-box">
+        <h3 id="#idTab5" class="idTabHrefShort page-product-heading">{$theme_settings.product_reviews_section_title}</h3> 
+        <div id="idTab5">
+            {reviews_content}
+        </div>
+    </section>
+{/if}

@@ -36,7 +36,7 @@
             {/if}
             <h3>
                 <label>
-                    {if !empty($m.logo)}<img src="{$m.logo}" class="method-logo">{/if}
+                    {if !empty($m.logo)}<img src="{rtrim($wa_url,'/')}{$m.logo}" class="method-logo">{/if}
                     <input type="radio" name="shipping_id" value="{$m.id}" {if $m.external || !empty($m.error)}disabled{/if} {if $m.id == $shipping.id}checked{/if}>
                     {$m.name|escape}
                 </label> 

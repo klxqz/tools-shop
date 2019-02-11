@@ -7,26 +7,26 @@
 
         <div class="col-sm-4">
             <ul class="menu-h product-menu">
-                <li class="selected"><a href="{$wa->shop->productUrl($product)}">[`Overview`]</a></li>
+                <li class="selected"><a {if $theme_settings.product_reviews_display_mode!= 'product_page'}href="{$wa->shop->productUrl($product)}"{/if}>[`Overview`]</a></li>
                 <li>
-                    <a href="{$wa->shop->productUrl($product, 'reviews')}">[`Reviews`]</a>
+                    <a {if $theme_settings.product_reviews_display_mode == 'product_page'}onclick="document.getElementById('tab-review').scrollIntoView();"{else}href="{$wa->shop->productUrl($product, 'reviews')}"{/if}>[`Reviews`]</a>
                     <span class="hint">{$reviews_total_count}</span>
                 </li>
                 {foreach $product.pages as $page}
-                <li>
-                    <a href="{$wa->shop->productUrl($product, 'page', ['page_url' => $page.url])}">{$page.name|escape}</a>
-                </li>
+                    <li>
+                        <a href="{$wa->shop->productUrl($product, 'page', ['page_url' => $page.url])}">{$page.name|escape}</a>
+                    </li>
                 {/foreach}
 
                 <!-- plugin hook: 'frontend_product.menu' -->
                 {* @event frontend_product.%plugin_id%.menu *}
-                {foreach $frontend_product as $_}{$_.menu}{/foreach}
+            {foreach $frontend_product as $_}{$_.menu}{/foreach}
 
-            </ul>
-            <h1 class="view" itemprop="name">{$product.name|escape}</h1>
-            {if $product.images}
+        </ul>
+        <h1 class="view" itemprop="name">{$product.name|escape}</h1>
+        {if $product.images}
             <script type="text/javascript">
-                jQuery(document).ready(function() {
+                jQuery(document).ready(function () {
                     var myPhotoSwipe = $("#gallery a").photoSwipe({
                         enableMouseWheel: false, enableKeyboard: false, captionAndToolbarAutoHideDelay: 0
                     });
@@ -36,11 +36,11 @@
             <div id="full_gallery">
                 <ul id="gallery">
                     {foreach $product.images as $image name=f_images}
-                    <li>
-                        <a id="g-product-image-{$image.id}" data-slide="{$smarty.foreach.f_images.iteration-1}" href="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '900', false)}">
-                            {$wa->shop->productImgHtml(['id'=> $product.id, 'image_id' => $image.id, 'ext' => $image.ext, 'image_desc' => $image.description], '270', ['alt' => $product.name|cat:' - ':$image.description|escape])}
-                        </a>
-                    </li>
+                        <li>
+                            <a id="g-product-image-{$image.id}" data-slide="{$smarty.foreach.f_images.iteration-1}" href="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '900', false)}">
+                                {$wa->shop->productImgHtml(['id'=> $product.id, 'image_id' => $image.id, 'ext' => $image.ext, 'image_desc' => $image.description], '270', ['alt' => $product.name|cat:' - ':$image.description|escape])}
+                            </a>
+                        </li>
                     {/foreach}
                 </ul>
             </div>
@@ -52,76 +52,76 @@
                 <div class="image-additional">
                     <ul id="image-additional">
                         {foreach $product.images as $image}
-                        <li>
-                            <a href="#" id="product-image-{$image.id}" data-image="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '270', false)}" data-zoom-image="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '900', false)}">
-                                {$wa->shop->productImgHtml(['id'=> $product.id, 'image_id' => $image.id, 'ext' => $image.ext, 'image_desc' => $image.description], '70x70', ['alt' => $product.name|cat:' - ':$image.description|escape])}
-                            </a>
-                        </li>
+                            <li>
+                                <a href="#" id="product-image-{$image.id}" data-image="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '270', false)}" data-zoom-image="{shopImage::getUrl(['id' => $image.id, 'product_id' => $product.id, 'ext' => $image.ext], '900', false)}">
+                                    {$wa->shop->productImgHtml(['id'=> $product.id, 'image_id' => $image.id, 'ext' => $image.ext, 'image_desc' => $image.description], '70', ['alt' => $product.name|cat:' - ':$image.description|escape])}
+                                </a>
+                            </li>
                         {/foreach}
                     </ul>
                     <div class="clear"></div>
                 </div>
             </div>
-            {/if}
-        </div>
-        <div class="col-sm-8">
-            <h1>{$product.name|escape}</h1>
+        {/if}
+    </div>
+    <div class="col-sm-8">
+        <h1>{$product.name|escape}</h1>
 
-            <div class="description">
-                {include file="product.cart.html" inline}
+        <div class="description">
+            {include file="product.cart.html" inline}
 
-                <div class="clear"></div>
-                <div class="review">
-                    <div>
-                        {if !empty($product.rating) && $product.rating > 0}
+            <div class="clear"></div>
+            <div class="review">
+                <div>
+                    {if !empty($product.rating) && $product.rating > 0}
                         <div class="rating nowrap" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" title="{sprintf('[`Average user rating: %s / 5`]', $product.rating)}">
                             {$wa->shop->ratingHtml($product.rating, 16)}
                             <span itemprop="ratingValue" style="display: none;">{$product.rating}</span>
                             <span itemprop="reviewCount" style="display: none;">{$reviews_total_count}</span>
                         </div>
-                        {/if}
-                        &nbsp;&nbsp;
-                        <div class="btn-rew">
-                            <a onclick="document.getElementById('tab-review').scrollIntoView();">[`Reviews`]</a>
-                            <a href="{$wa->shop->productUrl($product, 'reviews')}"><i class="fa fa-pencil"></i>[`Write a review`]</a>
-                            <div class="clear"></div>
-                        </div>
+                    {/if}
+                    &nbsp;&nbsp;
+                    <div class="btn-rew">
+                        <a onclick="document.getElementById('tab-review').scrollIntoView();">[`Reviews`]</a>
+                       {if $theme_settings.product_reviews_display_mode != 'product_page'} <a href="{$wa->shop->productUrl($product, 'reviews')}"><i class="fa fa-pencil"></i>[`Write a review`]</a> {/if}
+                        <div class="clear"></div>
                     </div>
-                    <div class="clear"></div>
                 </div>
                 <div class="clear"></div>
-                {if $product.categories && count($product.categories)>1}
+            </div>
+            <div class="clear"></div>
+            {if $product.categories && count($product.categories)>1}
                 <div class="product-categories">
                     <b>[`Categories`]:</b>
                     {foreach $product.categories as $c}
-                    {if $c.status}
-                    <span class="product-info"><a href="{$wa->getUrl('/frontend/category', ['category_url' => $c.full_url])}">{$c.name|escape}</a></span>{if !$c@last}, {/if}
-                    {/if}
-                    {/foreach}
+                        {if $c.status}
+                            <span class="product-info"><a href="{$wa->getUrl('/frontend/category', ['category_url' => $c.full_url])}">{$c.name|escape}</a></span>{if !$c@last}, {/if}
+                            {/if}
+                        {/foreach}
                 </div>
-                {/if}
-                {if $product.tags}
+            {/if}
+            {if $product.tags}
                 <div class="product-tags">
                     <b>[`Tags`]:</b>
                     {foreach $product.tags as $t}
-                    <a href="{$wa->getUrl('/frontend/tag', ['tag' => urlencode($t)])}">{$t}</a>{if !$t@last}, {/if}
+                        <a href="{$wa->getUrl('/frontend/tag', ['tag' => urlencode($t)])}">{$t}</a>{if !$t@last}, {/if}
                     {/foreach}
                 </div>
-                {/if}
+            {/if}
 
 
-                <div class="share">
-                    <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
-                    <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"></div> 
-                </div>
+            <div class="share">
+                <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+                <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"></div> 
             </div>
-
         </div>
+
     </div>
+</div>
 
 
 
-    {if $product.description}
+{if $product.description}
     <div class="tabs">
         <div class="tab-heading">
             Описание		
@@ -131,13 +131,13 @@
 
             <!-- plugin hook: 'frontend_product.block' -->
             {* @event frontend_product.%plugin_id%.block *}
-            {foreach $frontend_product as $_}{$_.block}{/foreach}
-        </div>
+        {foreach $frontend_product as $_}{$_.block}{/foreach}
     </div>
-    {/if}
+</div>
+{/if}
 
-    <!-- product features -->
-    {if $product.features}
+<!-- product features -->
+{if $product.features}
     <div class="tabs">
         <div class="tab-heading">
             Характеристики		
@@ -146,58 +146,42 @@
 
             <table class="attribute table table-bordered features" id="product-features">
                 {foreach $product.features as $f_code => $f_value}
-                <tr{if $features[$f_code].type == 'divider'} class="divider"{/if}>
-                    <td class="name">
-                        {$features[$f_code].name|escape}
-                    </td>
-                    <td class="value" itemprop="{$f_code|escape}">
-                        {if is_array($f_value)}
-                        {if $features[$f_code].type == 'color'}
-                        {implode('<br /> ', $f_value)}
-                        {else}
-                        {implode(', ', $f_value)}
-                        {/if}
-                        {else}
-                        {$f_value}
-                        {/if}
-                    </td>
-                </tr>
+                    <tr{if $features[$f_code].type == 'divider'} class="divider"{/if}>
+                        <td class="name">
+                            {$features[$f_code].name|escape}
+                        </td>
+                        <td class="value" itemprop="{$f_code|escape}">
+                            {if is_array($f_value)}
+                                {if $features[$f_code].type == 'color'}
+                                    {implode('<br /> ', $f_value)}
+                                {else}
+                                    {implode(', ', $f_value)}
+                                {/if}
+                            {else}
+                                {$f_value}
+                            {/if}
+                        </td>
+                    </tr>
                 {/foreach}
             </table>
         </div>
     </div>
-    {/if}
+{/if}
 
-    <div class="tabs" id="tab-review">
-        <div class="tab-heading">
-            [`Reviews`]		
-        </div>
-        <div class="tab-content">
-            {if $reviews}
-            <ul class="menu-v with-icons">
-                {foreach $reviews as $review}
-                <li data-id={$review.id} data-parent-id="0">
-                    {include file="review.html" reply_allowed=false inline}
-                </li>
-                {/foreach}
-            </ul>
-            {/if}
-            {if !$reviews}
-            <p>{sprintf('[`Be the first to <a href="%s">write a review</a> of this product!`]', 'reviews/')}</p>
-            {else}
-            {sprintf(_w(
-            'Read <a href="%s">all %d review</a> on %s', 
-            'Read <a href="%s">all %d reviews</a> on %s', 
-            $reviews_total_count, false
-            ), 'reviews/', $reviews_total_count, $product.name|escape)
-            }
-            {/if}        
+<div class="tabs" id="tab-review">
+    <div class="tab-heading">
+        [`Reviews`]		
+    </div>
+    <div class="tab-content">
+        <div id="reviews_section" class="">
+            {include file="product.reviews_section.html" content_only = true}
         </div>
     </div>
+</div>
 
-    <!-- plugin hook: 'frontend_product.block_aux' -->
-    {* @event frontend_product.%plugin_id%.block_aux *}
-    {foreach $frontend_product as $_}{$_.block_aux}{/foreach} 
+<!-- plugin hook: 'frontend_product.block_aux' -->
+{* @event frontend_product.%plugin_id%.block_aux *}
+{foreach $frontend_product as $_}{$_.block_aux}{/foreach} 
 
 </div>
 
@@ -206,24 +190,24 @@
 {$crossselling = $product->crossSelling()}
 
 {if $upselling}
-<div class="tabs">
-    <div class="tab-heading">
-        [`See also`]	
+    <div class="tabs">
+        <div class="tab-heading">
+            [`See also`]	
+        </div>
+        <div class="tab-content box-product">
+            {include file="list-slider.html" products=$upselling}
+        </div>
     </div>
-    <div class="tab-content box-product">
-        {include file="list-slider.html" products=$upselling}
-    </div>
-</div>
 {/if}
 {if $crossselling}
-<div class="tabs">
-    <div class="tab-heading">
-        {sprintf('[`Customers who bought %s also bought`]', $product.name|escape)}
+    <div class="tabs">
+        <div class="tab-heading">
+            {sprintf('[`Customers who bought %s also bought`]', $product.name|escape)}
+        </div>
+        <div class="tab-content box-product">
+            {include file="list-slider.html" products=$crossselling}
+        </div>
     </div>
-    <div class="tab-content box-product">
-        {include file="list-slider.html" products=$crossselling}
-    </div>
-</div>
 {/if}
 
 

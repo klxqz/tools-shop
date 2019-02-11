@@ -1,5 +1,5 @@
 <!-- products thumbnail list view -->
-<div class="product-grid">
+<div class="product-grid productlistio">
     <ul class="row">
         {foreach $products as $p name=products}
             <li itemscope itemtype ="http://schema.org/Product" class="col-sm-4 {if $smarty.foreach.products.index % 3 == 0}first-in-line{elseif ($smarty.foreach.products.index+1) % 3 == 0}last-in-line{/if}">
@@ -13,7 +13,7 @@
                          {/if}
                          data-name="{$p.name|escape}" 
                          data-url="{$p.frontend_url}" 
-                         data-img="{shopImage::getUrl(['id' => $p.image_id, 'product_id' => $p.id, 'ext' => $p.ext, 'default' => "`$wa_theme_url`img/dummy200.png"], '80x80', false)}"
+                         data-img="{shopImage::getUrl(['id' => $p.image_id, 'product_id' => $p.id, 'ext' => $p.ext, 'default' => "`$wa_theme_url`img/dummy200.png"], '70', false)}"
                          ></div>
                     <div class="image">
                         <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &mdash; {strip_tags($p.summary)}{/if}">
@@ -54,7 +54,7 @@
                                         {if !empty($theme_settings.ruble_symbol)}
                                             {shop_currency_html($p.compare_price)}
                                         {else}
-                                            {shop_currency($p.price)}
+                                            {shop_currency($p.compare_price)}
                                         {/if}
                                     </span>
                                 {/if}
@@ -98,7 +98,7 @@
 
 
 {if isset($pages_count) && $pages_count > 1}
-    <div class="pagination{if !empty($theme_settings.use_lazyloading)} lazyloading-paging{/if}">
+    <div class="pagination{if !empty($theme_settings.use_lazyloading)} lazyloading-paging{/if} lazyloading-paging">
         {wa_pagination total=$pages_count attrs=['class' => "links"]}
     </div>
 {/if}

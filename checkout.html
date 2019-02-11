@@ -1,14 +1,4 @@
 <!-- following CSS hides top navigation menu; remove <style>…</style> to unhide -->
-
-
-<div class="checkout-header">
-    <div class="float-right large">
-        {$cart_total = $wa->shop->cart->total()}
-        [`Order total`]: <strong>{shop_currency_html($cart_total, true)}</strong>
-    </div>
-    <h3><a href="{$wa_app_url}">{$wa->shop->settings("name")}</a></h3>
-</div>
-
 <div class="checkout">
 
     {if isset($checkout_steps)}
